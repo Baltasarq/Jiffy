@@ -1,0 +1,19 @@
+@title = "lAnchoa"
+@author = "baltasarq@gmail.com"
+@intro = "¡Cómete una anchoa!"
+
+[[salon]] sala
+Ves una [TV] y una [super radio](radio). Una [puerta] permte el acceso a la [[cocina]].
+
+[puerta]
+Pues sí, una puerta.
+
+[TV]
+En blanco y negro.
+
+[radio]
+**No** *funciona*.
+
+[[cocina]] 
+Muy pequeña, con un frigo y un mesado.
+
