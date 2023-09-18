@@ -45,7 +45,8 @@ public class Main {
 
     private static Set<Option> extractOptions(List<String> args)
     {
-        final Set<Option> TORET = new HashSet<>( args.size() - 1 );
+        final int CAPACITY = Math.max( 0, args.size() - 1 );
+        final Set<Option> TORET = new HashSet<>( CAPACITY );
 
         while ( !args.isEmpty() ) {
             String arg = args.get( 0 );
