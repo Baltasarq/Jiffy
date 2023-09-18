@@ -1,0 +1,35 @@
+{"lanchoa": {
+        "author": "baltasarq@gmail.com",
+        "dormitorio": {
+            "cama": {"desc": "Empujas el colchón hacia abajo y una nubecilla de polvo se eleva sobre tu mano..."},
+            "desc": "Solo hay una [cama] y una desvencijada mesilla."
+        },
+        "calle": {"desc": ""},
+        "salón": {
+            "mesa": {"desc": "La típica mesa de centro."},
+            "syn": "sala",
+            "televisor": {
+                "syn": "tv",
+                "desc": "Si no fuera por el tamaño de la parte trasera (es de tubo), no tendría nada de especial."
+            },
+            "tresillo": {
+                "syn": "sofá",
+                "desc": "Un sofá y dos sillones."
+            },
+            "desc": "El salón es... antiguo. Parece como conservado en el tiempo por algún misterioso mecanismo. El [tresillo] se sitúa frente a un [televisor] y una [vieja radio](radio), con una [mesa] en el medio, mientras mientras tres puertas en los extremos permiten dirigirse a la [[cocina]], el [[dormitorio]] y a la [[calle]].",
+            "radio": {
+                "syn": "receptor",
+                "desc": "La radio **no** funciona."
+            }
+        },
+        "desc": "¡Cómete una anchoa!",
+        "cocina": {
+            "mesado": {"desc": "Una larga plancha de piedra que... **no** es mármol de carrara."},
+            "frigorífico": {
+                "syn": "frigo",
+                "desc": "Pues sí, una nevera blanca y alta, de las de siempre."
+            },
+            "fregadero": {"desc": "De acero inoxidable."},
+            "desc": "La cocina es tremendamente austera, con solo una puerta entre el [[e, salón]] y ella. Un [frigorífico] se arrincona contra la esquina, mientras el [fregadero] se sitúa al final de una [mesado] entre ellos."
+        }
+    }}

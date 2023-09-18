@@ -1,19 +1,47 @@
-@title = "lAnchoa"
+[[lAnchoa]]
 @author = "baltasarq@gmail.com"
-@intro = "¡Cómete una anchoa!"
 
-[[salon]] sala
-Ves una [TV] y una [super radio](radio). Una [puerta] permte el acceso a la [[cocina]].
+¡Cómete una anchoa!
 
-[puerta]
-Pues sí, una puerta.
 
-[TV]
-En blanco y negro.
+[[Cocina]]
+La cocina es tremendamente austera, con solo una puerta entre el [[e, salón]] y ella. Un [frigorífico] se arrincona contra la esquina, mientras el [fregadero] se sitúa al final de una [mesado] entre ellos.
+
+[frigorífico]
+@syn = "frigo", "nevera"
+
+Pues sí, una nevera blanca y alta, de las de siempre.
+
+[fregadero]
+De acero inoxidable.
+
+[mesado]
+Una larga plancha de piedra que... **no** es mármol de carrara.
+
+[[Salón]]
+@syn = "sala"
+El salón es... antiguo. Parece como conservado en el tiempo por algún misterioso mecanismo. El [tresillo] se sitúa frente a un [televisor] y una [vieja radio](radio), con una [mesa] en el medio, mientras mientras tres puertas en los extremos permiten dirigirse a la [[cocina]], el [[dormitorio]] y a la [[calle]].
+
+[mesa]
+La típica mesa de centro.
+
+[televisor]
+@syn = "tv"
+Si no fuera por el tamaño de la parte trasera (es de tubo), no tendría nada de especial.
+
+[tresillo]
+@syn = "sofá", "sillón"
+Un sofá y dos sillones.
 
 [radio]
-**No** *funciona*.
+@syn = "receptor"
+La radio **no** funciona.
 
-[[cocina]] 
-Muy pequeña, con un frigo y un mesado.
+[[Dormitorio]]
+Solo hay una [cama] y una desvencijada mesilla.
 
+[cama]
+Empujas el colchón hacia abajo y una nubecilla de polvo se eleva sobre tu mano...
+
+[[calle]]
+Aquí no hay nada que hacer.
