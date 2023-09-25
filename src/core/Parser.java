@@ -24,7 +24,7 @@ import java.nio.file.Paths;
 
 
 public class Parser {
-    public enum Status {STORY, LOC, OBJ };
+    public enum Status { STORY, LOC, OBJ };
 
     public Parser() throws CompileError
     {
@@ -96,14 +96,13 @@ public class Parser {
         if ( this.lex.match( Lexer.VAR ) ) {
             this.lex.advance( -1 );
 
-
             if ( this.state == Status.LOC
               || this.state == Status.OBJ )
             {
                 this.AST.current( this.state ).add( this.parseVariable() );
             }
             else
-            if ( this.state == Status.STORY) {
+            if ( this.state == Status.STORY ) {
                 final Var VAR = this.parseVariable();
 
                 if ( this.AST.IF_VBLES.contains( VAR.getId().get() ) ) {
@@ -111,7 +110,7 @@ public class Parser {
                 } else {
                     throw new CompileError( this.numLine,
                                             this.lex.getPos(),
-                                            "vble cannot be set for whole game: "
+                                            "vble cannot be set for whole story: "
                                                     + VAR.getId().get() );
                 }
             }
@@ -123,6 +122,10 @@ public class Parser {
               || Character.isAlphabetic( FIRST_CHAR )
               || DESC_FIRST_ALLOWED_CHARS.indexOf( FIRST_CHAR ) > -1 )
             {
+                if ( !this.DESC.isEmpty() ) {
+                    this.DESC.append( ' ' );
+                }
+
                 this.DESC.append( line );
             }
         }
@@ -150,11 +153,15 @@ public class Parser {
             // Look for the current entity and set the desc
             final Entity ENT = this.AST.current( this.state );
 
-            if ( this.state == Status.STORY ) {
-                this.AST.getStory().setDesc( STR_DESC );
-            }
+            try {
+                if ( this.state == Status.STORY ) {
+                    this.AST.getStory().setDesc( STR_DESC );
+                }
 
-            ENT.setDesc( STR_DESC );
+                ENT.setDesc( STR_DESC );
+            } catch(CompileError exc) {
+                throw buildError( exc.getMessage() );
+            }
 
             // Clear the string builder for a new description
             this.DESC.setLength( 0 );
@@ -248,7 +255,7 @@ public class Parser {
     {
         Var toret = null;
 
-        if ( this.lex.match( Lexer.VAR) ) {
+        if ( this.lex.match( Lexer.VAR ) ) {
             String id = this.lex.getToken();
 
             if ( this.lex.match( Lexer.ASSIGN ) ) {

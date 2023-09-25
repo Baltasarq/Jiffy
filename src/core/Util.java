@@ -32,6 +32,14 @@ public final class Util {
                 new StringBuilder( id.length() + prefix.length() );
         String strId = id.trim().toUpperCase();
 
+        // Add prefix, if needed
+        prefix = prefix.trim();
+        if ( !prefix.isEmpty() ) {
+            TORET.append( prefix );
+            TORET.append( '_' );
+        }
+
+        // Add the id, replacing vowels and spaces
         strId.replace( "  ", "_" );
         for(char ch: strId.toCharArray()) {
             int vowelPos = ACUTED_UPPER_VOWELS.indexOf( ch );
@@ -42,12 +50,36 @@ public final class Util {
             else
                 // Only ascii
                 if ( ch >= 'A'
-                        && ch <= 'Z' )
+                  && ch <= 'Z' )
                 {
                     TORET.append( ch );
                 }
         }
 
-        return prefix + "_" + TORET;
+        return TORET.toString();
+    }
+
+    public static String divideInLinesWith(int cols, String txt, String delimiter)
+    {
+        final StringBuilder TORET = new StringBuilder( txt.length() );
+        int pos = 0;
+        int nextCol = cols;
+
+        while( nextCol > pos
+            && nextCol < txt.length() )
+        {
+            if ( txt.charAt( nextCol ) == ' ' ) {
+                TORET.append( txt, pos, nextCol );
+                TORET.append( delimiter );
+
+                pos = nextCol;
+                nextCol += cols;
+            } else {
+                --nextCol;
+            }
+        }
+
+        TORET.append( txt.substring( pos ) );
+        return TORET.toString();
     }
 }

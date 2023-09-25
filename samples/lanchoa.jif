@@ -20,7 +20,10 @@ Una larga plancha de piedra que... **no** es mármol de carrara.
 
 [[Salón]]
 @syn = "sala"
-El salón es... antiguo. Parece como conservado en el tiempo por algún misterioso mecanismo. El [tresillo] se sitúa frente a un [televisor] y una [vieja radio](radio), con una [mesa] en el medio, mientras mientras tres puertas en los extremos permiten dirigirse a la [[cocina]], el [[dormitorio]] y a la [[calle]].
+El salón es... antiguo. Parece como conservado en el tiempo por algún misterioso mecanismo.
+El [tresillo] se sitúa frente a un [televisor] y una vieja [radio], con una [mesa] en el medio,
+mientras tres puertas en los extremos permiten dirigirse a la [[o, cocina]],
+al [[e, dormitorio]] y a la [[s, calle]].
 
 [mesa]
 La típica mesa de centro.
@@ -38,10 +41,10 @@ Un sofá y dos sillones.
 La radio **no** funciona.
 
 [[Dormitorio]]
-Solo hay una [cama] y una desvencijada mesilla.
+Solo hay una [cama] y una desvencijada mesilla. Una puerta permite volver al [[o, salón]].
 
 [cama]
 Empujas el colchón hacia abajo y una nubecilla de polvo se eleva sobre tu mano...
 
 [[calle]]
-Aquí no hay nada que hacer.
+Aquí no hay nada que hacer. La puerta de la casa permite volver al [[n, interior]].
