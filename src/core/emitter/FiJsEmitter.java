@@ -41,8 +41,6 @@ public class FiJsEmitter extends Emitter {
         }
 
         // The story info
-        out.write( new core.emitter.templates.fijs.StoryInfo(
-                                            AST.getStory(),
-                                            AST.getLocs().get( 0 ) ).subst() );
+        out.write( new core.emitter.templates.fijs.StoryInfo( AST ).subst() );
     }
 }

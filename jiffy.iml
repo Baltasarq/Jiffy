@@ -6,7 +6,7 @@
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
       <excludePattern pattern="tests/*" />
     </content>
-    <orderEntry type="jdk" jdkName="20" jdkType="JavaSDK" />
+    <orderEntry type="jdk" jdkName="21" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="json" level="project" />
     <orderEntry type="library" name="au.dius.pact.jvm.consumer.junit5" level="project" />

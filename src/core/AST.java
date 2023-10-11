@@ -6,6 +6,7 @@ package core;
 
 import core.ast.Entity;
 import core.ast.Loc;
+import core.ast.Obj;
 import core.ast.Story;
 import core.errors.CompileError;
 
@@ -14,11 +15,11 @@ import java.util.ArrayList;
 
 
 public final class AST {
-    public final String IF_VBLES = " author ";
+    public final String IF_VBLES = " author intro start pic version ";
 
     public AST() throws CompileError
     {
-        this.current = this.STORY = new Story( Id.empty() );
+        this.current = this.STORY = new Story( this, Id.EMPTY_STORY_ID );
     }
 
     public void add(Entity entity) throws CompileError
@@ -51,6 +52,36 @@ public final class AST {
 
             if ( this.current instanceof Loc loc ) {
                 toret = loc.current();
+            }
+        }
+
+        return toret;
+    }
+
+    public Loc findLocById(String id)
+    {
+        Loc toret = null;
+
+        for(final Loc LOC: this.getLocs()) {
+            if ( LOC.getId().get().equals( id ) ) {
+                toret = LOC;
+                break;
+            }
+        }
+
+        return toret;
+    }
+
+    public Obj findObjById(String id)
+    {
+        Obj toret = null;
+
+        for(final Loc LOC: this.getLocs()) {
+            for(final Obj OBJ: LOC.getObjs()) {
+                if ( OBJ.getId().get().equals( id ) ) {
+                    toret = OBJ;
+                    break;
+                }
             }
         }
 

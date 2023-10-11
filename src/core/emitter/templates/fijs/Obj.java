@@ -25,7 +25,9 @@ public class Obj extends Templater {
     {
         final Map<String, String> SUBSTS = new HashMap<>();
         final core.ast.Obj ENTITY_OBJ = (core.ast.Obj) this.getEntity();
-        final String LOC_OWNER = Util.varNameFromId( "LOC", ENTITY_OBJ.getOwnerId().get() );
+        final String LOC_OWNER = Util.varNameFromId(
+                                    "LOC",
+                                     ENTITY_OBJ.getOwner().getId().get() );
 
         SUBSTS.put( "$OBJ_VAR_NAME", Util.varNameFromId( "OBJ", ENTITY_OBJ.getId().get() ) );
         SUBSTS.put( "$OBJ_ID", ENTITY_OBJ.getId().get() );

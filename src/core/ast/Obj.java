@@ -4,19 +4,21 @@
 package core.ast;
 
 
+import core.AST;
 import core.Id;
+import core.errors.CompileError;
 
 
 // Represents objects (inside locs).
 public class Obj extends Entity {
-    public Obj(Id id, Id ownerId)
+    public Obj(final AST AST, String name, final Loc OWNER) throws CompileError
     {
-        super( id );
-        this.OWNER = ownerId;
+        super( AST, name );
+        this.OWNER = OWNER;
     }
 
     /** @return the id of the owner loc. */
-    public Id getOwnerId()
+    public Loc getOwner()
     {
         return this.OWNER;
     }
@@ -27,5 +29,5 @@ public class Obj extends Entity {
         return this.getClass().getSimpleName() + " /" + super.toString();
     }
 
-    private final Id OWNER;
+    private final Loc OWNER;
 }

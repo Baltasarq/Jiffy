@@ -4,17 +4,17 @@
 package core.ast;
 
 
+import core.AST;
 import core.Id;
 import core.errors.CompileError;
-
 
 import java.util.*;
 
 
 public class Story extends Loc {
-    public Story(Id id)
+    public Story(final AST AST, String name) throws CompileError
     {
-        super( id );
+        super( AST, name );
         this.LOCS = new HashMap<>();
         this.current = this;
         this.ifId = UUID.randomUUID();
@@ -40,7 +40,7 @@ public class Story extends Loc {
         final Id ID = loc.getId();
 
         if ( this.LOCS.get( ID ) != null ) {
-            throw new CompileError( "object '"
+            throw new CompileError( "loc '"
                     + ID
                     + "' already exists in: " + this.getId() );
         }

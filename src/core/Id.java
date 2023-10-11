@@ -29,15 +29,6 @@ public class Id {
         return this.id;
     }
 
-    private static String idFromTxt(String txt)
-    {
-        String toret = txt.trim().toLowerCase();
-
-
-
-        return toret;
-    }
-
     public int hashCode()
     {
         return this.id.hashCode();
@@ -60,6 +51,11 @@ public class Id {
         return this.get();
     }
 
+    private static String idFromTxt(String txt)
+    {
+        return Util.varNameFromId( "", txt.trim() ).toLowerCase();
+    }
+
     public static Id empty()
     {
         if ( emptyId == null ) {
@@ -69,6 +65,7 @@ public class Id {
                 throw new Error( "creating empty_id" );
             }
         }
+
         return emptyId;
     }
 

@@ -4,88 +4,87 @@
 package tests;
 
 
+import core.AST;
+import core.Id;
+import core.ast.Loc;
 import core.errors.CompileError;
+import core.parser.Var;
+import core.parser.literals.StrLiteral;
+
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.Assertions;
-
-import core.HtmlFromMarkdown;
 
 
 class HtmlFromMarkdownTest {
     @BeforeEach
-    void setUp()
+    void setUp() throws CompileError
     {
-        this.cnvtEmpty = new HtmlFromMarkdown( "" );
-        this.cnvtSpaces = new HtmlFromMarkdown( "    " );
-        this.cnvtMarks = new HtmlFromMarkdown( "`Esto` ***es*** **una** *prueba*" );
-        this.cnvtRef = new HtmlFromMarkdown( "[puerta] a la [calle]" );
-        this.cnvtRefMays = new HtmlFromMarkdown( "[Puerta] a la [calle]" );
-        this.cnvtRefAccents = new HtmlFromMarkdown( "[Cómoda] y [fácil] cajonera." );
-        this.cnvtMov = new HtmlFromMarkdown( "[[e, Cocina]] y [[o, Baño]] son salidas posibles." );
-        this.cnvtMovErr = new HtmlFromMarkdown( "[[Cocina]]" );
+        this.ast = new AST();
+        this.loc = new Loc( this.ast, "locDemo" );
     }
 
     @Test
     void convertEmpty() throws CompileError
     {
-        Assertions.assertEquals( "", this.cnvtEmpty.convert() );
+        this.loc.setDesc( "" );
+        Assertions.assertEquals( "", this.loc.getDesc() );
     }
 
     @Test
     void convertSpaces() throws CompileError
     {
-        Assertions.assertEquals( "", this.cnvtSpaces.convert() );
+        this.loc.setDesc( "    " );
+        Assertions.assertEquals( "", this.loc.getDesc() );
     }
 
     @Test
     void convertCommonMarks() throws CompileError
     {
+        this.loc.setDesc( "`Esto` ***es*** **una** *prueba*" );
         Assertions.assertEquals( "<code>Esto</code> <b><i>es</i></b> <b>una</b> <i>prueba</i>",
-                                  this.cnvtMarks.convert() );
+                                  this.loc.getDesc() );
     }
 
     @Test
     void convertRegularRefs() throws CompileError
     {
+        this.loc.setDesc( "[puerta] a la [calle]" );
         Assertions.assertEquals( "${puerta, ex puerta} a la ${calle, ex calle}",
-                                    this.cnvtRef.convert() );
+                                  this.loc.getDesc() );
     }
 
     @Test
     void convertMaysRefs() throws CompileError
     {
+        this.loc.setDesc( "[Puerta] a la [calle]" );
         Assertions.assertEquals( "${Puerta, ex puerta} a la ${calle, ex calle}",
-                                    this.cnvtRefMays.convert() );
+                                  this.loc.getDesc() );
     }
 
     @Test
     void convertAccentedRefs() throws CompileError
     {
+        this.loc.setDesc( "[Cómoda] y [fácil] cajonera." );
         Assertions.assertEquals( "${Cómoda, ex comoda} y ${fácil, ex facil} cajonera.",
-                this.cnvtRefAccents.convert() );
+                                  this.loc.getDesc() );
     }
 
     @Test
     void convertMovement() throws CompileError
     {
+        Loc locCocina = new Loc( this.ast, "Cocina" );
+        Loc locBanno = new Loc( this.ast, "Baño" );
+
+        // Prepare
+        this.loc.add( new Var( new Id( "con_east" ), new StrLiteral( "Cocina" )) );
+        this.loc.add( new Var( new Id( "con_west" ), new StrLiteral( "Baño" )) );
+
+        // Chk
+        this.loc.setDesc( "[[Cocina]] y [[Baño]] son salidas posibles." );
         Assertions.assertEquals( "${Cocina, e} y ${Baño, o} son salidas posibles.",
-                this.cnvtMov.convert() );
+                                  this.loc.getDesc() );
     }
 
-    @Test
-    void convertMovementErr()
-    {
-        Assertions.assertThrows( CompileError.class, () -> {
-            Assertions.assertEquals( "${Cocina, e}.", this.cnvtMovErr.convert() );
-        });
-    }
-
-    HtmlFromMarkdown cnvtEmpty;
-    HtmlFromMarkdown cnvtSpaces;
-    HtmlFromMarkdown cnvtMarks;
-    HtmlFromMarkdown cnvtRef;
-    HtmlFromMarkdown cnvtRefMays;
-    HtmlFromMarkdown cnvtRefAccents;
-    HtmlFromMarkdown cnvtMov;
-    HtmlFromMarkdown cnvtMovErr;
+    private AST ast;
+    private Loc loc;
 }

@@ -1,21 +1,22 @@
 // lanchoa
 /*
-    ¡Cómete una anchoa!
+    ¡Cómete una anchoa! Tendrás que comerte una anchoa, pero... ¡no vale \
+     hacerlo de cualquier manera!
 
-    @ 2023-09-25 15:19
-    IfId 09668b3e-62d0-4c8c-abd6-59580e53bd37
+    @ 2023-10-11 16:44
+    IfId 8cb9fdad-b054-4fc1-b06e-2570b7e0d45b
 */
 
 
 // -------------------------------------------------- dormitorio ---
 const LOC_DORMITORIO = ctrl.locs.crea(
-    "dormitorio",
-    [  ],
+    "Dormitorio",
+    [ "dormitorio", "dormitorio" ],
     "Solo hay una ${cama, ex cama} y una desvencijada mesilla. Una puerta \
-     permite volver al ${salón, o}." );
+     permite volver al ${salón, $DIR}." );
 
 LOC_DORMITORIO.ini = function() {
-    this.pic = "";
+    this.pic = "res/dormitorio.jpg";
 };
 
 const OBJ_CAMA = ctrl.creaObj(
@@ -30,28 +31,66 @@ const OBJ_CAMA = ctrl.creaObj(
 
 // -------------------------------------------------- calle ---
 const LOC_CALLE = ctrl.locs.crea(
-    "calle",
-    [  ],
+    "Calle",
+    [ "calle", "calle" ],
     "" );
 
 LOC_CALLE.ini = function() {
-    this.pic = "";
+    this.pic = "res/calle.jpg";
 };
 
 
-// -------------------------------------------------- salón ---
-const LOC_SALON = ctrl.locs.crea(
-    "salón",
+// -------------------------------------------------- cocina ---
+const LOC_COCINA = ctrl.locs.crea(
+    "Cocina",
+    [ "cocina", "cocina" ],
+    "La cocina es tremendamente austera, con solo una puerta entre el \
+     ${salón, $DIR} y ella. Un ${frigorífico, ex frigorifico} se arrincona \
+     contra la esquina, mientras el ${fregadero, ex fregadero} se sitúa al \
+     final de una ${mesado, ex mesado} entre ellos." );
+
+LOC_COCINA.ini = function() {
+    this.pic = "res/cocina.jpg";
+};
+
+const OBJ_MESADO = ctrl.creaObj(
+    "mesado",
     [  ],
+    "Una larga plancha de piedra que... <b>no</b> es mármol de carrara.",
+    LOC_COCINA,
+    Ent.Scenery
+);
+
+const OBJ_FREGADERO = ctrl.creaObj(
+    "fregadero",
+    [  ],
+    "De acero inoxidable.",
+    LOC_COCINA,
+    Ent.Scenery
+);
+
+const OBJ_FRIGORIFICO = ctrl.creaObj(
+    "frigorifico",
+    [  ],
+    "Pues sí, una nevera blanca y alta, de las de siempre.",
+    LOC_COCINA,
+    Ent.Scenery
+);
+
+
+// -------------------------------------------------- salon ---
+const LOC_SALON = ctrl.locs.crea(
+    "Salón",
+    [ "salon", "salón" ],
     "El salón es... antiguo. Parece como conservado en el tiempo por algún \
      misterioso mecanismo. El ${tresillo, ex tresillo} se sitúa frente a \
      un ${televisor, ex televisor} y una vieja ${radio, ex radio}, con una \
      ${mesa, ex mesa} en el medio, mientras tres puertas en los extremos \
-     permiten dirigirse a la ${cocina, o}, al ${dormitorio, e} y a la \
-     ${calle, s}." );
+     permiten dirigirse a la ${cocina, $DIR}, al ${dormitorio, $DIR} y a \
+     la ${calle, $DIR}." );
 
 LOC_SALON.ini = function() {
-    this.pic = "";
+    this.pic = "res/salon.jpg";
 };
 
 const OBJ_MESA = ctrl.creaObj(
@@ -88,60 +127,23 @@ const OBJ_RADIO = ctrl.creaObj(
 );
 
 
-// -------------------------------------------------- cocina ---
-const LOC_COCINA = ctrl.locs.crea(
-    "cocina",
-    [  ],
-    "La cocina es tremendamente austera, con solo una puerta entre el \
-     ${salón, e} y ella. Un ${frigorífico, ex frigorifico} se arrincona \
-     contra la esquina, mientras el ${fregadero, ex fregadero} se sitúa al \
-     final de una ${mesado, ex mesado} entre ellos." );
-
-LOC_COCINA.ini = function() {
-    this.pic = "";
-};
-
-const OBJ_MESADO = ctrl.creaObj(
-    "mesado",
-    [  ],
-    "Una larga plancha de piedra que... <b>no</b> es mármol de carrara.",
-    LOC_COCINA,
-    Ent.Scenery
-);
-
-const OBJ_FRIGORIFICO = ctrl.creaObj(
-    "frigorífico",
-    [  ],
-    "Pues sí, una nevera blanca y alta, de las de siempre.",
-    LOC_COCINA,
-    Ent.Scenery
-);
-
-const OBJ_FREGADERO = ctrl.creaObj(
-    "fregadero",
-    [  ],
-    "De acero inoxidable.",
-    LOC_COCINA,
-    Ent.Scenery
-);
-
-
 // ------------------------------------------------------- Player ---
 const PLAYER = ctrl.personas.creaPersona(
     "Jugador",
     ["jugador", "jugadora" ],
     "El bravo PC.",
-    LOC_DORMITORIO
+    salon
 );
 
 
 // ---------------------------------------------------------- Ini ---
 ctrl.ini = function() {
     this.setTitle( "lanchoa" );
-    this.setIntro( "¡Cómete una anchoa!" );
-    // this.setPic( "res/portada.jpg" );
-    this.setAuthor( "Increíble Autor" );
-    this.setVersion( "20230925" );
+    this.setIntro( "¡Cómete una anchoa! Tendrás que comerte una anchoa, pero... ¡no vale \
+     hacerlo de cualquier manera!" );
+    this.setPic( "res/salon.jpg" );
+    this.setAuthor( "baltasarq@gmail.com" );
+    this.setVersion( "v1.0 20231011" );
     this.personas.changePlayer( PLAYER );
-    this.locs.setStart( LOC_DORMITORIO );
+    this.locs.setStart( salon );
 };

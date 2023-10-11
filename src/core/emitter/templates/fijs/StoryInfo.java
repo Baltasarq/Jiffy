@@ -4,9 +4,10 @@
 package core.emitter.templates.fijs;
 
 
-import core.Util;
-import core.ast.Entity;
+import core.AST;
+import core.ast.Loc;
 import core.emitter.templates.Templater;
+import core.parser.RValue;
 
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -15,10 +16,10 @@ import java.util.*;
 
 /** Templates for locs in fi-js. */
 public class StoryInfo extends Templater {
-    public StoryInfo(final Entity ENT, final core.ast.Loc START)
+    public StoryInfo(final AST AST)
     {
-        super( ENT );
-        this.START = START;
+        super( AST.getStory() );
+        this.AST = AST;
         this.initDefaultSubsts();
     }
 
@@ -30,12 +31,12 @@ public class StoryInfo extends Templater {
         final DateTimeFormatter DT_FMT = DateTimeFormatter
                             .ofPattern("uuuuMMdd", Locale.ROOT );
         final String FORMATTED_DATE = DT_FMT.format( ZonedDateTime.now() );
-        final String LOC_ID = Util.varNameFromId( "LOC", this.START.getId().get() );
 
         SUBSTS.put( "$STORY_ID", ENT_STORY.getId().get() );
         SUBSTS.put( "$STORY_DESC", ENT_STORY.getDesc() );
-        SUBSTS.put( "$STORY_VERSION", FORMATTED_DATE );
-        SUBSTS.put( "$STORY_START_LOC", LOC_ID );
+        SUBSTS.put( "$STORY_VERSION",
+                    DEFAULT_SUBSTS.get( "$STORY_VERSION" )
+                            + " " + FORMATTED_DATE );
 
         this.mergeSubstMaps( DEFAULT_SUBSTS, SUBSTS );
         return this.applySubsts( STORY_TEMPLATE, SUBSTS );
@@ -44,25 +45,63 @@ public class StoryInfo extends Templater {
     private void initDefaultSubsts()
     {
         final String[] KEYS = {
+                "$STORY_AUTHOR",
+                "$STORY_PIC",
+                "$STORY_INTRO",
                 "$STORY_DESC",
                 "$STORY_VERSION",
                 "$STORY_START_LOC"
         };
         final String[] VALUES = {
+                /* $STORY_AUTHOR     <- */ "author@brave.authors.com",
+                /* $STORY_PIC        <- */ "",
+                /* $STORY_INTRO      <- */ "",
                 /* $STORY_DESC       <- */ "",
                 /* $STORY_VERSION    <- */ "1.0",
                 /* $STORY_START_LOC  <- */ "null"
         };
 
+        // Create default substs
         DEFAULT_SUBSTS.clear();
         for(int i = 0; i < KEYS.length; ++i) {
             DEFAULT_SUBSTS.put( KEYS[ i ], VALUES[ i ] );
         }
 
+        // Real values, if present as vbles
+        final RValue VAR_AUTHOR = this.getVar( "author" );
+        final RValue VAR_PIC = this.getVar( "pic" );
+        final RValue VAR_INTRO = this.getVar( "intro" );
+        final RValue VAR_VERSION = this.getVar( "version" );
+        final RValue VAR_START_LOC = this.getVar( "start" );
+
+        if ( VAR_AUTHOR != null ) {
+            DEFAULT_SUBSTS.put( "$STORY_AUTHOR", VAR_AUTHOR.toString() );
+        }
+
+        if ( VAR_PIC != null ) {
+            DEFAULT_SUBSTS.put( "$STORY_PIC", VAR_PIC.toString() );
+        }
+
+        if ( VAR_INTRO != null ) {
+            DEFAULT_SUBSTS.put( "$STORY_INTRO", VAR_INTRO.toString() );
+        }
+
+        if ( VAR_VERSION != null ) {
+            DEFAULT_SUBSTS.put( "$STORY_VERSION", VAR_VERSION.toString() );
+        }
+
+        if ( VAR_START_LOC != null ) {
+            final Loc LOC = this.AST.findLocById( VAR_START_LOC.toString() );
+
+            if ( LOC != null ) {
+                DEFAULT_SUBSTS.put( "$STORY_START_LOC", VAR_START_LOC.toString() );
+            }
+        }
+
         return;
     }
 
-    private final core.ast.Loc START;
+    private final AST AST;
 
     private static final Map<String, String> DEFAULT_SUBSTS = new HashMap<>();
 
@@ -82,8 +121,8 @@ public class StoryInfo extends Templater {
             ctrl.ini = function() {
                 this.setTitle( "$STORY_ID" );
                 this.setIntro( "$STORY_DESC" );
-                // this.setPic( "res/portada.jpg" );
-                this.setAuthor( "Increíble Autor" );
+                this.setPic( "$STORY_PIC" );
+                this.setAuthor( "$STORY_AUTHOR" );
                 this.setVersion( "$STORY_VERSION" );
                 this.personas.changePlayer( PLAYER );
                 this.locs.setStart( $STORY_START_LOC );

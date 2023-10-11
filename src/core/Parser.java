@@ -70,7 +70,7 @@ public class Parser {
             final Entity ENT = this.parseEntity();
 
             if ( ENT instanceof Loc ) {
-                if ( this.AST.getStory().getId() != Id.empty() )
+                if ( !this.AST.getStory().getId().equals( Id.empty() ) )
                 {
                     this.AST.add( ENT );
                 } else {
@@ -95,16 +95,19 @@ public class Parser {
         else
         if ( this.lex.match( Lexer.VAR ) ) {
             this.lex.advance( -1 );
+            final Var VAR = this.parseVariable();
 
-            if ( this.state == Status.LOC
-              || this.state == Status.OBJ )
+            if ( !this.AST.getLocs().isEmpty()
+              && ( this.state == Status.LOC
+                || this.state == Status.OBJ ) )
             {
-                this.AST.current( this.state ).add( this.parseVariable() );
+                this.AST.current( this.state ).add( VAR );
             }
             else
-            if ( this.state == Status.STORY ) {
-                final Var VAR = this.parseVariable();
-
+            if ( this.AST.getLocs().isEmpty()
+              && this.state == Status.LOC )
+            {
+                // We are parsing the story info as a loc
                 if ( this.AST.IF_VBLES.contains( VAR.getId().get() ) ) {
                     this.AST.getStory().add( VAR );
                 } else {
@@ -113,6 +116,8 @@ public class Parser {
                                             "vble cannot be set for whole story: "
                                                     + VAR.getId().get() );
                 }
+            } else {
+                throw buildError( "unexpected error parsing variable" );
             }
         } else {
             // Plain text -- it's a desc
@@ -201,8 +206,6 @@ public class Parser {
                 throw buildError( "expected obj's id" );
             }
 
-            final Id ID = new Id( strId );
-
             if ( !this.lex.match( Lexer.CLOSED_SQ_BRACKET ) ) {
                 throw buildError( "expected " + Lexer.CLOSED_SQ_BRACKET );
             }
@@ -212,8 +215,7 @@ public class Parser {
                 throw buildError( "expected end of line" );
             }
 
-
-            toret = new Obj( ID, OWNER.getId() );
+            toret = new Obj( this.AST, strId, OWNER );
         } else {
             throw buildError( "expected " + Lexer.OPENED_SQ_BRACKET );
         }
@@ -232,8 +234,6 @@ public class Parser {
                 throw buildError( "expected loc's id" );
             }
 
-            final Id ID = new Id( strId );
-
             if ( !this.lex.match( Lexer.CLOSE_LOC ) ) {
                 throw buildError( "expected " + Lexer.CLOSE_LOC );
             }
@@ -243,7 +243,7 @@ public class Parser {
                 throw buildError( "expected end of line" );
             }
 
-            toret = new Loc( ID );
+            toret = new Loc( this.AST, strId );
         } else {
             throw buildError( "expected " + Lexer.OPEN_LOC );
         }

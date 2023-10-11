@@ -6,6 +6,9 @@ package core.emitter.templates;
 
 import core.Id;
 import core.ast.Entity;
+import core.errors.CompileError;
+import core.parser.RValue;
+import core.parser.Var;
 
 import java.util.Map;
 
@@ -58,6 +61,23 @@ public abstract class Templater {
         });
 
         return;
+    }
+
+    protected RValue getVar(String id)
+    {
+        RValue toret = null;
+
+        try {
+            final Var VAR = this.ENT.getVble( new Id( id ) );
+
+            if ( VAR != null ) {
+                toret = VAR.getRValue();
+            }
+        } catch(CompileError exc) {
+            toret = null;
+        }
+
+        return toret;
     }
 
     private final Entity ENT;

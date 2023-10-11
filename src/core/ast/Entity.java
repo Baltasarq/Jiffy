@@ -4,6 +4,7 @@
 package core.ast;
 
 
+import core.AST;
 import core.Util;
 import core.HtmlFromMarkdown;
 import core.Id;
@@ -19,9 +20,18 @@ import java.util.Map;
 public abstract class Entity {
     private final String DESC_LINE_DELIMITER = " \\\n";
 
-    public Entity(Id id)
+    public Entity(AST AST, String name) throws CompileError
     {
-        this.id = id;
+        this.AST = AST;
+        name = name.trim();
+
+        this.id = new Id( name );
+        this.syns = new ArrayList<>();
+
+        if ( !this.id.equals( name ) ) {
+            this.addSyn( name );
+        }
+
         this.desc = "";
         this.VBLES = new HashMap<>();
     }
@@ -31,10 +41,21 @@ public abstract class Entity {
         return this.id;
     }
 
+    public List<String> getySyns()
+    {
+        return new ArrayList<>( this.syns );
+    }
+
+    public void addSyn(String syn)
+    {
+        this.syns.add( syn.trim().toLowerCase() );
+    }
+
     public void setDesc(String desc) throws CompileError
     {
-        desc = new HtmlFromMarkdown( desc ).convert();
-        this.desc = Util.divideInLinesWith( 70, desc, DESC_LINE_DELIMITER + "    " );
+        this.desc = desc;
+        this.desc = new HtmlFromMarkdown( this ).convert();
+        this.desc = Util.divideInLinesWith( 70, this.desc, DESC_LINE_DELIMITER + "    " );
     }
 
     public String getDesc()
@@ -69,13 +90,21 @@ public abstract class Entity {
         return new ArrayList<>( this.VBLES.values() );
     }
 
+    /** @return the containing AST. */
+    private AST getAST()
+    {
+        return this.AST;
+    }
+
     @Override
     public String toString()
     {
         return this.id.get();
     }
 
+    private final AST AST;
     private String desc;
+    private ArrayList<String> syns;
     protected Id id;
     private final Map<Id, Var> VBLES;
 }

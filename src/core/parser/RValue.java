@@ -8,4 +8,10 @@ package core.parser;
 public abstract class RValue {
     /** @return the value itself. */
     public abstract Object get();
+
+    @Override
+    public String toString()
+    {
+        return this.get().toString();
+    }
 }

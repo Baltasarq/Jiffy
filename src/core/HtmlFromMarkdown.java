@@ -4,6 +4,7 @@
 package core;
 
 
+import core.ast.Entity;
 import core.errors.CompileError;
 
 import java.util.HashMap;
@@ -19,9 +20,9 @@ public class HtmlFromMarkdown {
     private final String MOV_PATTERN = "${$TEXT, $DIR}";
 
     /** Creates a new converter, with the given text to convert.
-      * @param text the text to convert.
+      * @param ENT the entity with a desc to convert.
       */
-    public HtmlFromMarkdown(String text)
+    public HtmlFromMarkdown(final Entity ENT)
     {
         // Init tags dictionaries
         if ( openTags == null
@@ -73,7 +74,8 @@ public class HtmlFromMarkdown {
         }
 
         // Init text, replacing marks of length > 1
-        this.text = text.trim()
+        this.ENT = ENT;
+        this.TEXT = ENT.getDesc().trim()
                 .replace( "***", Character.toString( CTRL_HIGHLIGHT ) )
                 .replace( "**", Character.toString( CTRL_BOLD ) )
                 .replace( "___", Character.toString( CTRL_HIGHLIGHT ) )
@@ -93,12 +95,12 @@ public class HtmlFromMarkdown {
     */
     public String convert() throws CompileError
     {
-        final StringBuilder TORET = new StringBuilder( this.text.length() );
+        final StringBuilder TORET = new StringBuilder( this.TEXT.length() );
         Status st = Status.CHR;
         Status prevSt = Status.CHR;
         int posRef = 0;
 
-        for(char ch: this.text.toCharArray()) {
+        for(char ch: this.TEXT.toCharArray()) {
             st = findStatus( st, ch );
 
             if ( st == Status.CHR ) {
@@ -131,25 +133,16 @@ public class HtmlFromMarkdown {
                     st = Status.CHR;
                     posRef = TORET.length();
                 } else {
-                    String infoText = TORET.substring( posRef, TORET.length() );
-                    String[] partsInfo = infoText.split( "," );
+                    String locName = TORET.substring( posRef, TORET.length() );
 
-                    if ( partsInfo.length == 2 ) {
-                        // Remove apparition of $REF so far
-                        TORET.replace( posRef, TORET.length(), "" );
+                    // Remove apparition of $REF so far
+                    TORET.replace( posRef, TORET.length(), "" );
 
-                        prevSt = st = Status.CHR;
+                    prevSt = st = Status.CHR;
 
-                        // Append the reference pattern: ${REF, ex REF}
-                        TORET.append( MOV_PATTERN
-                                .replace( "$TEXT", partsInfo[ 1 ].trim() )
-                                .replace( "$DIR", partsInfo[ 0 ] ) );
-                    } else {
-                        throw new CompileError( "expected two parts in movement "
-                                                + "separated by a comma: "
-                                                + "direction and link text in: [["
-                                                + infoText + "]]" );
-                    }
+                    // Append the reference pattern: ${REF, ex REF}
+                    TORET.append( MOV_PATTERN
+                            .replace( "$TEXT", locName ) );
                 }
             } else {
                 TORET.append( this.findTag( st, prevSt != Status.CHR ) );
@@ -166,21 +159,11 @@ public class HtmlFromMarkdown {
         return TORET.toString();
     }
 
-    @Override
-    public String toString()
-    {
-        try {
-            return this.convert();
-        } catch(CompileError exc) {
-            return "";
-        }
-    }
-
     /** A finite state machine.
-      * @param st the current state
-      * @param ch the current char
-      * @return the new status, given the current status.
-      */
+     * @param st the current state
+     * @param ch the current char
+     * @return the new status, given the current status.
+     */
     private Status findStatus(Status st, char ch)
     {
         Status toret = Status.CHR;
@@ -209,7 +192,24 @@ public class HtmlFromMarkdown {
         return TAGS.get( st );
     }
 
-    private final String text;
+    /** @return the entity whose desc we are converting to HTML. */
+    public Entity getEntity()
+    {
+        return this.ENT;
+    }
+
+    @Override
+    public String toString()
+    {
+        try {
+            return this.convert();
+        } catch(CompileError exc) {
+            return "";
+        }
+    }
+
+    private final Entity ENT;
+    private final String TEXT;
 
     /** The states of the finite state machine. */
     private enum Status {

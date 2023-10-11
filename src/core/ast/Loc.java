@@ -4,6 +4,7 @@
 package core.ast;
 
 
+import core.AST;
 import core.Id;
 import core.errors.CompileError;
 
@@ -15,11 +16,22 @@ import java.util.Map;
 
 /** Represents locs (rooms). Rooms can have objects inside. */
 public class Loc extends Entity {
-    public Loc(Id id)
+    public Loc(final AST AST, String name) throws CompileError
     {
-        super( id );
+        super( AST, name );
         this.current = null;
         this.OBJS = new HashMap<>();
+
+        // Put the first char in upper case
+        this.title = name.trim().toLowerCase();
+        this.title = this.title.substring( 0, 1 ).toUpperCase()
+                     + this.title.substring( 1 );
+    }
+
+    /** @return the title of this room. */
+    public String getTitle()
+    {
+        return this.title;
     }
 
     public void add(Obj obj) throws CompileError
@@ -62,5 +74,6 @@ public class Loc extends Entity {
     }
 
     private Obj current;
+    private String title;
     private final Map<Id, Obj> OBJS;
 }
