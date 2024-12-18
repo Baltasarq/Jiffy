@@ -1,0 +1,40 @@
+[[Escena_Tablón]]
+@author = "baltasarq@gmail.com"
+@version = "1.0"
+@start = "fachada"
+
+Soretum: Escena 1. Atrapado entre dos edificios.
+
+[[fachada]]
+Bajas como puedes descolgado por la [pared], agarrado a la [manguera]. Hacia abajo, ves un [tablón] entre este edificio y el siguiente.
+
+[pared]
+La fachada... ¡está llena de ventanas! Vas poniendo los pies con cuidado para bajar con seguridad.
+
+[manguera]
+Cuelga desde la azotea, más arriba, y te sirve para descender por la [fachada].
+
+[tablón]
+Comunica la azotea del edificio contiguo, con lo que supones que es una ventana de este. ^{Un momento... {algo sucede, ex escenatablon}.}
+
+[escenatablon]
+^{Observas una escena... pantagruélica. Algunos supervivientes están atravesando el vacío por el tablón, a gatas, mientras fuera de su vista, tapadas por una de las chimeneas del edificio, se acercan varias de aquellas [criaturas]. Para cuando llegan al otro lado, y apenas han puesto un pie en el suelo, son atacados por ellas, hasta morir. } El tablón aún sigue apoyado entre los dos edificios.
+
+[criaturas]
+Obscenas, rabiosas, frenéticas, no hay otra forma de describirlas. Unas lanzan dentelladas, otras babean por la boca y extienden los brazos, usando sus manos cual garras. Afortunadamente, no parecen ser capaces de subirse al tablón.
+
+[[tablon]]
+El tablón se mantiene firmemente apoyado entre la [ventana] y la [azotea] del edificio.
+
+[cuchillo]
+^{Desde arriba no lo habías visto, pero está claro que se le ha caído a uno de los supervivientes que atravesaban el tablón}. Grande, de cocina.
+
+[ventana]
+La ventana del edificio del hotel comunica con uno de los largos corredores de alguna de las plantas. El problema es que está plagado de... esas cosas.
+
+[azotea]
+La azotea del edificio de enfrente está más o menos a la altura de la [ventana] del corredor del hotel. El gran problema es que está lleno de... esas criaturas, esos... ¿[zombis]?.
+
+[zombis]
+Tratan de extender sus brazos más allá de lo (¿humanamente...?) posible, tales son sus ganas de atraparte, desgarrarte.
+

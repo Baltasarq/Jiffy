@@ -1,0 +1,112 @@
+[[Soretum]]
+@intro = "Un agotador día en Oaxaca: el día de los muertos."
+@author = "baltasarq@gmail.com"
+@version = "1.0"
+@pic = "res/portada.jpg"
+
+Víspera del día de los muertos.<br/>
+Cansado, te diriges al hotel Soretum para descansar por fin tras un agotador día en Oaxaca. El proyecto de mejora del software ERP de la empresa va a necesitar más trabajo del esperado.
+
+
+[[hall]]
+El hall del hotel es una habitación envuelta en la semioscuridad en este momento. Un [mostrador] se sitúa contra la pared de la derecha al entrar en el hotel, mientras que al otro lado un grupo de [sillones] en penumbra flanquean un estrecho paso hacia los [ascensores] y las [escaleras] a su derecha.
+@con_up = "primero"
+
+[escaleras]
+${Suben, sube} hacia la primera planta.^{ Bueno, al menos eso esperas.}
+
+[ascensores]
+Dos puertas correderas metálicas de un pálido color dorado. El ascensor está ${abierto, sube}.
+
+[sillones]
+@syn = "sillón", "sillon"
+Se agrupan en semipenumbra alrededor de una pequeña [mesa].
+
+[mesa]
+Alrededor de la mesa hay varios [sillones], con todo el conjunto en semipenumbra.
+
+[mostrador]
+Sobre el mostrador hay uno de esos [timbres|timbre] con forma de campana. Un [libro] de registro puede verse a su lado, así como algunas [llaves].
+
+[llaves]
+@syn = "llave"
+Las llaves de varias habitaciones.
+
+[libro]
+Puedes ver las firmas de los huéspedes recién registrados. No ves el momento de completar este antiguo ritual de la firma y subir a la habitación que te asignen.
+
+[timbre]
+@syn = "campanilla"
+El timbre seguramente permite ${llamar, pulsa timbre}^{ (¿invocar?)} a alguien.
+
+[recepcionista]
+Un hombre uniformado con un traje entre gris y verde claro, pero con la chaqueta abierta, y resoplando cada dos por tres.
+
+
+[[primero]]
+@syn = "primer", "piso", "pasillo"
+@con_down = "hall"
+@con_up = "segundo"
+
+En este primer piso un largo pasillo da acceso a hasta veinte habitaciones a través de sendas [puertas], numeradas de la 101 al 120. También se puede $bajar, baja} o ${subir, sube} las [escaleras]. Antes de estrecharse hacia el pasillo, puedes ver la puerta de un cuartito de servicio en una de las paredes, y en la otra una salida de emergencia.
+
+[cuartito]
+El ${acceso, o} al cuartito de servicio se realiza a través de una puerta que tiene un pequeño cartel de "Servicio" en su tercio superior.
+
+[salida]
+Una ${salida, sal} de emergencia se sitúa frente al [cuartito].
+
+[escaleras]
+Han visto tiempos mejores. En este punto ya se puede apreciar el desgaste de la moqueta.
+
+[puertas]
+Dispuestas de forma simétrica a ambos lados del pasillo, hay diez (impares) a la izquierda y diez (pares) a la derecha.^{ Por si acaso: las impares a la izquierda son la 101, 103, 105, 107, 109, 111, 113, 115, 117 y 119. Las pares a la derecha son la 102, 104, 106, 108, 110, 112, 114, 116, 118 y 120.}
+
+
+[[segundo]]
+@syn = "segundo", "piso", "pasillo"
+@con_down = "primero"
+En este segundo piso un largo pasillo da acceso a hasta veinte habitaciones a través de sendas [puertas], numeradas de la 101 al 120. También se pueden $bajar, baja} las [escaleras].
+
+[salida]
+@syn = "barra", "panico", "pánico"
+
+Una ${salida, sal} de emergencia con una de esas barras del pánico.
+
+[escaleras]
+En este punto casi no se puede apreciar el desgaste de la moqueta. Está claro que este piso se utiliza menos que el otro. No se puede seguir subiendo.
+
+[puertas]
+@syn = "puerta"
+Dispuestas de forma simétrica a ambos lados del pasillo, hay diez (impares) a la izquierda y diez (pares) a la derecha.^{ Por si acaso: las impares a la izquierda son la 201, 203, 205, 207, 209, 211, 213, 215, 217 y 219. Las pares a la derecha son la 202, 204, 206, 208, 210, 212, 214, 216, 218 y 220.}
+
+
+[[azotea]]
+@syn = "terraza"
+@con_down = "segundo"
+@con_up = "almacen"
+
+Una terraza que se antoja diáfana alberga en realidad varios elementos: un [depósito] de agua, un [contenedor] de gas, la [entrada] a las escaleras de ${bajada, baja} y una especie de [caseta] que presumes será para el ascensor. Además, una ${escalerilla, sube} da acceso a lo que adivinas debe ser un almacén.
+
+[depósito]
+Un depósito de agua, con forma de barril (muy grande), sobre cuatro pilares.
+
+[contenedor]
+@syn = "jaula"
+
+Se encuentra encerrado en una especie de jaula. Siempre te ha parecido que tienen forma de salchicha.
+
+[entrada]
+@syn = "plataforma"
+
+Se trata de una pequeña plataforma que permite acceder de forma segura a las escaleras de emergencia que se anclan a uno de los costados del edificio del hotel.
+
+[caseta]
+@syn = "candado"
+
+El acceso está cerrado con un ${candado, golpea caseta}.
+
+
+[[almacén]]
+En el pequeño interior se agolpan todo tipo de herramientas.
+

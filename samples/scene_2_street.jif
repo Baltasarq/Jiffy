@@ -1,0 +1,38 @@
+[[Escena_Calle]]
+@author = "baltasarq@gmail.com"
+@version = "1.0"
+@start = "fachada"
+
+Soretum: Escena 2. En la calle.
+
+[[calle]]
+^{La calle Porfirio Díaz es una de las más importantes de Oaxaca. Es característica la presencia aquí del mercado tradicional de Pochote. }El mercado se expandía hoy por toda la calle, permitiendo los [puestos] avanzar a duras penas por la [acera]. Los puestos... y esas [criaturas].
+
+[puestos]
+^{Un [coche] aparece, atropellando puestos y zombis por igual. }Muchos de ellos están volcados, otros rotos; la mercancía ha rodado por el suelo.
+
+[criaturas]
+^{Quizás todavía no han reparado en tu presencia, pues ninguno camina hacia ti estirando los brazos como garras, como ya has visto antes. }Los zombis deambulan sin rumbo, por todas partes.
+
+[acera]
+Si puedes pasar por algún sitio, sin llamar demasiado la atención, es por aquí, hacia la [[n, carretera]] 190.
+
+[coche]
+El [[entrar, coche]] ha derrapado, abriéndose su puerta al pasar por tu lado. Un hombre bastante gordo, vestido su torso tan solo con una camiseta llena de sangre, te grita que te subas, haciéndote gestos y aspavientos de todo tipo.
+
+
+[[carretera]]
+^{La carretera internacional 190 cruza en perpendicular la calle. }Ahora, con más espacio, parece que se multiplican los [zombis].
+
+[zombis]
+Multitud de estas criaturas pueblan el asfalto.
+
+
+[[coche]]
+^{Tu [benefactor|conductor] habla contigo mientras dirige su mirada al frente, pendiente de la conducción. }El coche avanza por las calles gracias a su hábil [conductor]. Continuamente esquiva zombis en... distinto grado de grotesca completitud, faltándoles miembros o incluso trozos de de la cara.
+@syn = "carro"
+
+[conductor]
+De él destaca sobre todo su camiseta, repleta de manchas de sangre.
+
+
