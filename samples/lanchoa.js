@@ -3,8 +3,8 @@
     ¡Cómete una anchoa! Tendrás que comerte una anchoa, pero... ¡no vale \
      hacerlo de cualquier manera!
 
-    @ 2023-10-11 16:44
-    IfId 8cb9fdad-b054-4fc1-b06e-2570b7e0d45b
+    @ 2023-10-12 13:56
+    IfId c7e965ec-402a-4938-8ea0-2c3d87095762
 */
 
 
@@ -143,7 +143,7 @@ ctrl.ini = function() {
      hacerlo de cualquier manera!" );
     this.setPic( "res/salon.jpg" );
     this.setAuthor( "baltasarq@gmail.com" );
-    this.setVersion( "v1.0 20231011" );
+    this.setVersion( "v1.0 20231012" );
     this.personas.changePlayer( PLAYER );
     this.locs.setStart( salon );
 };

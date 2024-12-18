@@ -101,7 +101,7 @@ public class Parser {
               && ( this.state == Status.LOC
                 || this.state == Status.OBJ ) )
             {
-                this.AST.current( this.state ).add( VAR );
+                this.AST.current( this.state ).getVbles().add( VAR );
             }
             else
             if ( this.AST.getLocs().isEmpty()
@@ -109,7 +109,7 @@ public class Parser {
             {
                 // We are parsing the story info as a loc
                 if ( this.AST.IF_VBLES.contains( VAR.getId().get() ) ) {
-                    this.AST.getStory().add( VAR );
+                    this.AST.getStory().getVbles().add( VAR );
                 } else {
                     throw new CompileError( this.numLine,
                                             this.lex.getPos(),

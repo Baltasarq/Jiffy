@@ -60,7 +60,7 @@ public class JsonWriter {
         SUB_OBJ.put( "desc", ent.getDesc() );
 
         // Set the variables
-        for(Var vble: ent.getVbles()) {
+        for(Var vble: ent.getVbles().getAll()) {
             SUB_OBJ.put( vble.getId().get(), vble.getRValue().toString() );
         }
 

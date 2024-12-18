@@ -71,7 +71,7 @@ public class Loc extends Templater {
 
     private void addSyns(final Map<String, String> DEFAULT_SUBSTS)
     {
-        final List<String> SYNS = this.getEntity().getySyns();
+        final List<String> SYNS = this.getEntity().getSyns();
 
         if ( !SYNS.isEmpty() ) {
             // Add quotes

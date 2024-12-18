@@ -76,8 +76,12 @@ class HtmlFromMarkdownTest {
         Loc locBanno = new Loc( this.ast, "Baño" );
 
         // Prepare
-        this.loc.add( new Var( new Id( "con_east" ), new StrLiteral( "Cocina" )) );
-        this.loc.add( new Var( new Id( "con_west" ), new StrLiteral( "Baño" )) );
+        this.loc.getVbles()
+                .add( new Var( new Id( "con_east" ),
+                      new StrLiteral( "Cocina" )) );
+        this.loc.getVbles()
+                .add( new Var( new Id( "con_west" ),
+                      new StrLiteral( "Baño" )) );
 
         // Chk
         this.loc.setDesc( "[[Cocina]] y [[Baño]] son salidas posibles." );

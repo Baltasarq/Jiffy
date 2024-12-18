@@ -68,7 +68,7 @@ public abstract class Templater {
         RValue toret = null;
 
         try {
-            final Var VAR = this.ENT.getVble( new Id( id ) );
+            final Var VAR = this.ENT.getVbles().getById( new Id( id ) );
 
             if ( VAR != null ) {
                 toret = VAR.getRValue();

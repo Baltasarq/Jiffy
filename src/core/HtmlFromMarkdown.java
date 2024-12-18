@@ -5,7 +5,9 @@ package core;
 
 
 import core.ast.Entity;
+import core.ast.Loc;
 import core.errors.CompileError;
+import core.parser.Var;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -137,8 +139,12 @@ public class HtmlFromMarkdown {
 
                     // Remove apparition of $REF so far
                     TORET.replace( posRef, TORET.length(), "" );
-
                     prevSt = st = Status.CHR;
+
+                    // Look for loc
+                    //final Var VBLES = this.getEntity().getExitTo( locName );
+
+
 
                     // Append the reference pattern: ${REF, ex REF}
                     TORET.append( MOV_PATTERN

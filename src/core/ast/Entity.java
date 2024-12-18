@@ -10,6 +10,7 @@ import core.HtmlFromMarkdown;
 import core.Id;
 import core.errors.CompileError;
 import core.parser.Var;
+import core.parser.Vbles;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,7 +34,7 @@ public abstract class Entity {
         }
 
         this.desc = "";
-        this.VBLES = new HashMap<>();
+        this.VBLES = new Vbles();
     }
 
     public Id getId()
@@ -41,7 +42,7 @@ public abstract class Entity {
         return this.id;
     }
 
-    public List<String> getySyns()
+    public List<String> getSyns()
     {
         return new ArrayList<>( this.syns );
     }
@@ -63,37 +64,30 @@ public abstract class Entity {
         return desc;
     }
 
-    public void add(Var vble) throws CompileError
+    public Vbles getVbles()
     {
-        if ( vble == null ) {
-            throw new Error( "AST.add(): trying to insert a null OBJ" );
-        }
-
-        final Id ID = vble.getId();
-
-        if ( this.VBLES.get( ID ) != null ) {
-            throw new CompileError( "variable '"
-                                    + ID
-                                    + "' already exists in: " + this.id );
-        }
-
-        this.VBLES.put( vble.getId(), vble );
-    }
-
-    public Var getVble(Id id)
-    {
-        return this.VBLES.get( id );
-    }
-
-    public List<Var> getVbles()
-    {
-        return new ArrayList<>( this.VBLES.values() );
+        return this.VBLES;
     }
 
     /** @return the containing AST. */
-    private AST getAST()
+    public AST getAST()
     {
         return this.AST;
+    }
+
+    public String getExitTo(String locName)
+    {
+      /*  final List<Var> VBLES = this.getVbles();
+
+        for(Var VBLE: VBLES) {
+            if ( VBLE.getId().get().startsWith( EXIT_PREFIX ) )
+            {
+
+            }
+        }
+
+       */
+        return "";
     }
 
     @Override
@@ -106,5 +100,5 @@ public abstract class Entity {
     private String desc;
     private ArrayList<String> syns;
     protected Id id;
-    private final Map<Id, Var> VBLES;
+    private Vbles VBLES;
 }
