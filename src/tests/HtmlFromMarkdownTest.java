@@ -1,15 +1,15 @@
 // Jiffy (c) 2023 Baltasar MIT License <baltasarq@gmail.com>
 
 
-package com.baltasarq.jiffy.tests;
+package com.devbaltasarq.jiffy.tests;
 
 
-import com.baltasarq.jiffy.core.AST;
-import com.baltasarq.jiffy.core.Id;
-import com.baltasarq.jiffy.core.ast.Loc;
-import com.baltasarq.jiffy.core.errors.CompileError;
-import com.baltasarq.jiffy.core.parser.Var;
-import com.baltasarq.jiffy.core.parser.literals.StrLiteral;
+import com.devbaltasarq.jiffy.core.AST;
+import com.devbaltasarq.jiffy.core.Id;
+import com.devbaltasarq.jiffy.core.ast.Loc;
+import com.devbaltasarq.jiffy.core.errors.CompileError;
+import com.devbaltasarq.jiffy.core.parser.Var;
+import com.devbaltasarq.jiffy.core.parser.literals.StrLiteral;
 
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.Assertions;
