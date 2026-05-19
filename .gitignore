@@ -1,3 +1,7 @@
+# Misc config files
+.project
+.settings
+
 # Compiled class file
 *.class
 
