@@ -9,6 +9,7 @@ import com.devbaltasarq.jiffy.core.Emitter;
 import com.devbaltasarq.jiffy.core.ast.Loc;
 import com.devbaltasarq.jiffy.core.ast.Obj;
 import com.devbaltasarq.jiffy.core.emitter.templates.fijs.StoryCommentHeader;
+import com.devbaltasarq.jiffy.core.errors.EmitError;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -21,9 +22,12 @@ public class FiJsEmitter extends Emitter {
         super( AST );
     }
 
-    /** Does the real work of emitting fi-js code. */
+    /** Does the real work of emitting fi-js code.
+      * @param out where to write the story.
+      * @throws IOException if out cannot be written.
+      */
     @Override
-    public void emit(Writer out) throws IOException
+    public void emit(Writer out) throws IOException, EmitError
     {
         final AST AST = this.getAst();
 
@@ -31,7 +35,7 @@ public class FiJsEmitter extends Emitter {
         out.write( new StoryCommentHeader( AST.getStory() ).subst() );
 
         // All locs
-        for(Loc loc: this.getAst().getLocs() ) {
+        for(Loc loc: this.getAst().getStory().getLocs() ) {
             out.write( new com.devbaltasarq.jiffy.core.emitter
                                             .templates.fijs.Loc( loc ).subst() );
 

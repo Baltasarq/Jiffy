@@ -1,19 +1,20 @@
 [[lAnchoa]]
 @author = "baltasarq@gmail.com"
 @pic = "res/salon.jpg"
-@intro = "Cómete una anchoa sin morir por el salazón."
 @version = "v1.0"
 @start = "salon"
 
 ¡Cómete una anchoa!
-Tendrás que comerte una anchoa, pero... ¡no vale hacerlo de cualquier manera!
+Tendrás que comerte una anchoa, pero...
+¡no vale hacerlo de cualquier manera!
 
 
 [[Cocina]]
 @pic = "res/cocina.jpg"
-@con_east = "salon"
 
-La cocina es tremendamente austera, con solo una puerta entre el [[salón]] y ella. Un [frigorífico] se arrincona contra la esquina, mientras el [fregadero] se sitúa al final de una [mesado] entre ellos.
+La cocina es tremendamente austera, con solo una puerta entre
+el [[salón]](e) y ella. Un [frigorífico] se arrincona contra la esquina,
+mientras el [fregadero] se sitúa al final de una [mesado] entre ellos.
 
 [frigorífico]
 @syn = "frigo", "nevera"
@@ -29,20 +30,20 @@ Una larga plancha de piedra que... **no** es mármol de carrara.
 [[Salón]]
 @pic = "res/salon.jpg"
 @syn = "sala"
-@con_east = "dormitorio"
-@con_south = "calle"
-@con_west = "cocina"
-El salón es... antiguo. Parece como conservado en el tiempo por algún misterioso mecanismo.
-El [tresillo] se sitúa frente a un [televisor] y una vieja [radio], con una [mesa] en el medio,
-mientras tres puertas en los extremos permiten dirigirse a la [[cocina]],
-al [[dormitorio]] y a la [[calle]].
+
+El salón es... antiguo. Parece como conservado en el tiempo
+por algún misterioso e invisible mecanismo. El [tresillo] se sitúa frente a
+un [televisor] y una vieja [radio], con una [mesa] en el medio,
+mientras tres puertas en los extremos permiten dirigirse a la [[cocina]](o),
+al [[dormitorio]](e) y a la [[calle]](s).
 
 [mesa]
 La típica mesa de centro.
 
 [televisor]
 @syn = "tv"
-Si no fuera por el tamaño de la parte trasera (es de tubo), no tendría nada de especial.
+Si no fuera por el tamaño de la parte trasera (es de tubo),
+no tendría nada de especial.
 
 [tresillo]
 @syn = "sofá", "sillón"
@@ -55,13 +56,16 @@ La radio **no** funciona.
 
 [[Dormitorio]]
 @pic = "res/dormitorio.jpg"
-Solo hay una [cama] y una desvencijada mesilla. Una puerta permite volver al [[salón]].
+Solo hay una [cama] y una desvencijada mesilla.
+Una puerta permite volver al [[salón]](o).
 
 [cama]
-Empujas el colchón hacia abajo y una nubecilla de polvo se eleva sobre tu mano...
+Empujas el colchón hacia abajo y una nubecilla de polvo
+se eleva sobre tu mano...
 
 
-[[calle]]
+[[Calle]]
 @pic = "res/calle.jpg"
-@con_north = "salon"
-Aquí no hay nada que hacer. La puerta de la casa permite volver al [[interior]].
+Aquí no hay nada que hacer. La puerta de la casa
+permite volver al [[salon|interior]](n).
+...

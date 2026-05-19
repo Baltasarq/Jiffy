@@ -9,7 +9,7 @@ import com.devbaltasarq.jiffy.core.errors.CompileError;
 
 /** Represents the id's for entities. */
 public class Id {
-    public static final String EMPTY_STORY_ID = "|";
+    public static final String EMPTY_STORY_ID = "??";
 
     public Id(String strId) throws CompileError
     {
@@ -31,17 +31,27 @@ public class Id {
         return this.id;
     }
 
+    @Override
     public int hashCode()
     {
         return this.id.hashCode();
     }
 
+    @Override
     public boolean equals(Object other)
     {
         boolean toret = false;
 
-        if ( other instanceof Id ) {
-            toret = this.id.equals( ( (Id) other ).get() );
+        try {
+            if ( other instanceof final Id OTHER_ID ) {
+                toret = this.get().equals( OTHER_ID.get() );
+            }
+            else
+            if ( other instanceof final String OTHER_STR ) {
+                toret = new Id( OTHER_STR ).get().equals( this.get() );
+            }
+        } catch(CompileError exc) {
+            toret = false;
         }
 
         return toret;
@@ -55,7 +65,7 @@ public class Id {
 
     private static String idFromTxt(String txt)
     {
-        return Util.varNameFromId( "", txt.trim() ).toLowerCase();
+        return varNameFromId( "", txt.trim() ).toLowerCase();
     }
 
     public static Id empty()
@@ -69,6 +79,53 @@ public class Id {
         }
 
         return emptyId;
+    }
+    
+    /** Converts a name, such as "salón" in an id
+      * that can safely be used for a variable or
+      * even for a file name.
+      * @param prefix a prefix to prepend to the new id.
+      * @param name the name such as "salón"
+      * @return the converted id, i.e. prefix + "salon".
+     */
+    public static String varNameFromId(String prefix, String name)
+    {
+        final String ACUTED_UPPER_VOWELS = "\u00C1\u00C9\u00CD\u00D3\u00DA";
+        final String VOWELS = "AEIOU";
+        final StringBuilder TORET =
+                new StringBuilder( name.length() + prefix.length() );
+        String strId = name.trim().toUpperCase();
+
+        // Add prefix, if needed
+        prefix = prefix.trim();
+        if ( !prefix.isEmpty() ) {
+            TORET.append( prefix );
+            TORET.append( '_' );
+        }
+
+        // Add the id, replacing vowels and spaces
+        strId = strId.replaceAll( "  ", "_" );
+        for(char ch: strId.toCharArray()) {
+            int vowelPos = ACUTED_UPPER_VOWELS.indexOf( ch );
+
+            if ( vowelPos > -1 ) {
+                TORET.append( VOWELS.charAt( vowelPos ) );
+            } else {
+                // Only underscores, ascii letters and numbers
+                boolean addCh =
+                            ( ch >= 'A'
+                           && ch <= 'Z' )
+                        ||  ( ch >= '0'
+                           && ch <= '9' )
+                        ||  ( ch == '_' );
+                
+                if ( addCh ) {
+                    TORET.append( ch );
+                }
+            }
+        }
+
+        return TORET.toString();
     }
 
     private static Id emptyId;

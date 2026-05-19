@@ -15,17 +15,17 @@ import java.util.ArrayList;
 
 
 public final class AST {
-    public final String IF_VBLES = " author intro start pic version ";
+    public final String IF_VBLES = " author start pic version ";
 
     public AST() throws CompileError
     {
-        this.current = this.STORY = new Story( this, Id.EMPTY_STORY_ID );
+        this.current = this.story = new Story( this, Id.EMPTY_STORY_ID );
     }
 
     public void add(Entity entity) throws CompileError
     {
         if ( entity instanceof Loc loc ) {
-            this.STORY.add( loc );
+            this.story.add( loc );
             this.current = entity;
         } else {
             throw new Error( "AST.add(): trying to add an entity which is not a loc" );
@@ -34,9 +34,31 @@ public final class AST {
         return;
     }
 
+    /** @return the story after compiled. */
     public Story getStory()
     {
-        return this.STORY;
+        return this.story;
+    }
+    
+    /** Allows the story object to be changed by
+      * the compiled story, which is presented a Loc.
+      * @param LOC the loc that was presented as the story.
+      * @throws CompileError if LOC's id is empty or blank.
+      */
+    public void changeStoryFor(final Loc LOC) throws CompileError
+    {
+        boolean changeCurrent = ( this.current == this.story );
+        
+        this.story = new Story(
+                            this,
+                            LOC.getId().get() );
+        
+        this.story.changeTitle( LOC.getTitle() );
+        this.story.setDesc( LOC.getDesc() );
+        
+        if ( changeCurrent ) {
+            this.current = this.story;
+        }
     }
 
     public Entity current(Parser.Status st)
@@ -58,13 +80,53 @@ public final class AST {
         return toret;
     }
 
-    public Loc findLocById(String id)
+    /** @return a loc, given its id, or null if not found.
+      * @param id the given id.
+      */
+    public Loc findLocByStrId(String id)
     {
-        Loc toret = null;
+        try {
+            return this.getStory().getLoc( new Id( id ) );
+        } catch(CompileError exc) {
+            return null;
+        }
+    }
+    
+    /** @return a loc, given its id, or null if not found.
+      * @param id the given id.
+      */
+    public Loc findLocById(Id id)
+    {
+        return this.getStory().getLoc( id );
+    }
 
-        for(final Loc LOC: this.getLocs()) {
-            if ( LOC.getId().get().equals( id ) ) {
-                toret = LOC;
+    /** @return an obj, given its, or null if not found.
+      *         It always returns the first found, while
+      *         running over all locs.
+      * @param id a given id.
+      */
+    public Obj findObjByStrId(String id)
+    {
+        try {
+            return this.findObjById( new Id( id ) );
+        } catch(CompileError exc) {
+            return null;
+        }
+    }
+    
+    /** @return an obj, given its, or null if not found.
+      *         It always returns the first found, while
+      *         running over all locs.
+      * @param id a given id.
+      */
+    public Obj findObjById(Id id)
+    {
+        Obj toret = null;
+
+        for(final Loc LOC: this.getStory().getLocs()) {
+            toret = LOC.getObj( id );
+            
+            if ( toret != null ) {
                 break;
             }
         }
@@ -72,27 +134,6 @@ public final class AST {
         return toret;
     }
 
-    public Obj findObjById(String id)
-    {
-        Obj toret = null;
-
-        for(final Loc LOC: this.getLocs()) {
-            for(final Obj OBJ: LOC.getObjs()) {
-                if ( OBJ.getId().get().equals( id ) ) {
-                    toret = OBJ;
-                    break;
-                }
-            }
-        }
-
-        return toret;
-    }
-
-    public List<Loc> getLocs()
-    {
-        return new ArrayList<>( this.STORY.getLocs() );
-    }
-
     private Entity current;
-    private final Story STORY;
+    private Story story;
 }

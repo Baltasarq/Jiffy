@@ -16,7 +16,7 @@ public class Obj extends Entity {
         this.OWNER = OWNER;
     }
 
-    /** @return the id of the owner loc. */
+    /** @return the owner loc. */
     public Loc getOwner()
     {
         return this.OWNER;

@@ -5,6 +5,7 @@ package com.devbaltasarq.jiffy.core.emitter.templates.fijs;
 
 
 import com.devbaltasarq.jiffy.core.AST;
+import com.devbaltasarq.jiffy.core.Id;
 import com.devbaltasarq.jiffy.core.emitter.templates.Templater;
 import com.devbaltasarq.jiffy.core.parser.RValue;
 
@@ -15,6 +16,14 @@ import java.util.*;
 
 /** Templates for locs in fi-js. */
 public class StoryInfo extends Templater {
+    private static final String VAR_STORY_ID = "$(STORY_ID)";
+    private static final String VAR_STORY_DESC = "$(STORY_DESC)";
+    private static final String VAR_STORY_VERSION = "$(STORY_VERSION)";
+    private static final String VAR_STORY_AUTHOR = "$(STORY_AUTHOR)";
+    private static final String VAR_STORY_PIC = "$(STORY_PIC)";
+    private static final String VAR_STORY_INTRO = "$(STORY_INTRO)";
+    private static final String VAR_STORY_START_LOC = "$(STORY_START_LOC)";
+    
     public StoryInfo(final AST AST)
     {
         super( AST.getStory() );
@@ -31,11 +40,14 @@ public class StoryInfo extends Templater {
                             .ofPattern("uuuuMMdd", Locale.ROOT );
         final String FORMATTED_DATE = DT_FMT.format( ZonedDateTime.now() );
 
-        SUBSTS.put( "$STORY_ID", ENT_STORY.getId().get() );
-        SUBSTS.put( "$STORY_DESC", ENT_STORY.getDesc() );
-        SUBSTS.put( "$STORY_VERSION",
-                    DEFAULT_SUBSTS.get( "$STORY_VERSION" )
-                            + " " + FORMATTED_DATE );
+        SUBSTS.putAll(
+                Map.of(
+                        VAR_STORY_ID, ENT_STORY.getId().get(),
+                        VAR_STORY_DESC, ENT_STORY.getDesc(),
+                        VAR_STORY_VERSION,
+                                        DEFAULT_SUBSTS.get( VAR_STORY_VERSION )
+                                            + " " + FORMATTED_DATE
+                        ));
 
         this.mergeSubstMaps( DEFAULT_SUBSTS, SUBSTS );
         return this.applySubsts( STORY_TEMPLATE, SUBSTS );
@@ -43,29 +55,14 @@ public class StoryInfo extends Templater {
 
     private void initDefaultSubsts()
     {
-        final String[] KEYS = {
-                "$STORY_AUTHOR",
-                "$STORY_PIC",
-                "$STORY_INTRO",
-                "$STORY_DESC",
-                "$STORY_VERSION",
-                "$STORY_START_LOC"
-        };
-        final String[] VALUES = {
-                /* $STORY_AUTHOR     <- */ "author@brave.authors.com",
-                /* $STORY_PIC        <- */ "",
-                /* $STORY_INTRO      <- */ "",
-                /* $STORY_DESC       <- */ "",
-                /* $STORY_VERSION    <- */ "1.0",
-                /* $STORY_START_LOC  <- */ "null"
-        };
-
-        // Create default substs
-        DEFAULT_SUBSTS.clear();
-        for(int i = 0; i < KEYS.length; ++i) {
-            DEFAULT_SUBSTS.put( KEYS[ i ], VALUES[ i ] );
-        }
-
+        // Initial values
+        String author = "author@brave.authors.com";
+        String pic = "";
+        String desc = "";
+        String intro = "";
+        String version = "1.0";
+        String startLoc = "null";
+        
         // Real values, if present as vbles
         final RValue VAR_AUTHOR = this.getVar( "author" );
         final RValue VAR_PIC = this.getVar( "pic" );
@@ -74,30 +71,37 @@ public class StoryInfo extends Templater {
         final RValue VAR_START_LOC = this.getVar( "start" );
 
         if ( VAR_AUTHOR != null ) {
-            DEFAULT_SUBSTS.put( "$STORY_AUTHOR", VAR_AUTHOR.toString() );
+            author = VAR_AUTHOR.toString();
         }
 
         if ( VAR_PIC != null ) {
-            DEFAULT_SUBSTS.put( "$STORY_PIC", VAR_PIC.toString() );
+            pic = VAR_PIC.toString();
         }
 
         if ( VAR_INTRO != null ) {
-            DEFAULT_SUBSTS.put( "$STORY_INTRO", VAR_INTRO.toString() );
+            intro = VAR_INTRO.toString();
         }
 
         if ( VAR_VERSION != null ) {
-            DEFAULT_SUBSTS.put( "$STORY_VERSION", VAR_VERSION.toString() );
+            version = VAR_VERSION.toString();
         }
 
         if ( VAR_START_LOC != null ) {
-            final var LOC = this.AST.findLocById( VAR_START_LOC.toString() );
+            final var LOC = this.AST.findLocByStrId( VAR_START_LOC.toString() );
 
             if ( LOC != null ) {
-                DEFAULT_SUBSTS.put( "$STORY_START_LOC", VAR_START_LOC.toString() );
+                startLoc = Id.varNameFromId( "LOC", LOC.getId().toString() );
             }
         }
 
-        return;
+        DEFAULT_SUBSTS.putAll(
+                        Map.of(
+                            VAR_STORY_AUTHOR, author,
+                            VAR_STORY_PIC, pic,
+                            VAR_STORY_INTRO, intro,
+                            VAR_STORY_DESC, desc,
+                            VAR_STORY_VERSION, version,
+                            VAR_STORY_START_LOC, startLoc ));
     }
 
     private final AST AST;
@@ -112,19 +116,27 @@ public class StoryInfo extends Templater {
                 "Jugador",
                 ["jugador", "jugadora" ],
                 "El bravo PC.",
-                $STORY_START_LOC
+                %s
             );
             
             
             // ---------------------------------------------------------- Ini ---
             ctrl.ini = function() {
-                this.setTitle( "$STORY_ID" );
-                this.setIntro( "$STORY_DESC" );
-                this.setPic( "$STORY_PIC" );
-                this.setAuthor( "$STORY_AUTHOR" );
-                this.setVersion( "$STORY_VERSION" );
+                this.setTitle( "%s" );
+                this.setIntro( "%s" );
+                this.setPic( "%s" );
+                this.setAuthor( "%s" );
+                this.setVersion( "%s" );
                 this.personas.changePlayer( PLAYER );
-                this.locs.setStart( $STORY_START_LOC );
+                this.locs.setStart( %s );
             };
-            """;
+            """.formatted(
+                    VAR_STORY_START_LOC,
+                    VAR_STORY_ID,
+                    VAR_STORY_DESC,
+                    VAR_STORY_PIC,
+                    VAR_STORY_AUTHOR,
+                    VAR_STORY_VERSION,
+                    VAR_STORY_START_LOC
+            );
 }

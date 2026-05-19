@@ -4,6 +4,7 @@
 package com.devbaltasarq.jiffy.core;
 
 
+import com.devbaltasarq.jiffy.core.errors.EmitError;
 import java.io.*;
 import java.util.Map;
 
@@ -22,9 +23,10 @@ public abstract class Emitter {
       * same name but different extensions.
       * @param fileNameNoExt the file name (without extension) to output
       *                      the various files to.
+      * @throws IOException if the file cannot be written.
       * @see Emitter::emit
       */
-    public void emit(String fileNameNoExt) throws IOException
+    public void emit(String fileNameNoExt) throws IOException, EmitError
     {
         final String MAIN_CODE = fileNameNoExt + ".js";
 
@@ -35,8 +37,9 @@ public abstract class Emitter {
 
     /** This method will do the magic, emitting to a given outputstream.
       * @param f the OutputStream to write to.
+      * @throws IOException if the file cannot be written.
       */
-    public abstract void emit(Writer f) throws IOException;
+    public abstract void emit(Writer f) throws IOException, EmitError;
 
     /** @return the AST this object is running. */
     public AST getAst()

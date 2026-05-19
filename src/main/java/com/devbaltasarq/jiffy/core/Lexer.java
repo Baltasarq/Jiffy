@@ -150,7 +150,6 @@ public final class Lexer {
             this.advance();
         }
 
-        this.skipSpaces();
         return token;
     }
 

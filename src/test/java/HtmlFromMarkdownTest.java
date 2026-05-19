@@ -2,11 +2,8 @@
 
 
 import com.devbaltasarq.jiffy.core.AST;
-import com.devbaltasarq.jiffy.core.Id;
 import com.devbaltasarq.jiffy.core.ast.Loc;
 import com.devbaltasarq.jiffy.core.errors.CompileError;
-import com.devbaltasarq.jiffy.core.parser.Var;
-import com.devbaltasarq.jiffy.core.parser.literals.StrLiteral;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -70,21 +67,19 @@ public final class HtmlFromMarkdownTest {
     @Test
     public void convertMovement() throws CompileError
     {
-        //Loc locCocina = new Loc( this.ast, "Cocina" );
-        //Loc locBanno = new Loc( this.ast, "Baño" );
-
-        // Prepare
-        this.loc.getVbles()
-                .add( new Var( new Id( "con_east" ),
-                      new StrLiteral( "Cocina" )) );
-        this.loc.getVbles()
-                .add( new Var( new Id( "con_west" ),
-                      new StrLiteral( "Baño" )) );
-
+        this.ast.getStory().add(
+                                new Loc(
+                                        this.ast,
+                                        "Baño") );
+        this.ast.getStory().add(
+                                new Loc(
+                                        this.ast,
+                                        "Cocina") );
+        
         // Chk
-        this.loc.setDesc( "[[Cocina]] y [[Baño]] son salidas posibles." );
-        //Assertions.assertEquals( "${Cocina, e} y ${Baño, o} son salidas posibles.",
-        //                          this.loc.getDesc() );
+        this.loc.setDesc( "[[Cocina]](e) y [[Baño]](o) son salidas posibles." );
+        Assertions.assertEquals( "${Cocina, e} y ${Baño, o} son salidas posibles.",
+                                  this.loc.getDesc() );
     }
 
     private AST ast;

@@ -7,6 +7,7 @@ package com.devbaltasarq.jiffy.core.emitter.templates;
 import com.devbaltasarq.jiffy.core.Id;
 import com.devbaltasarq.jiffy.core.ast.Entity;
 import com.devbaltasarq.jiffy.core.errors.CompileError;
+import com.devbaltasarq.jiffy.core.errors.EmitError;
 import com.devbaltasarq.jiffy.core.parser.RValue;
 import com.devbaltasarq.jiffy.core.parser.Var;
 
@@ -25,8 +26,11 @@ public abstract class Templater {
         return this.ENT;
     }
 
-    /** Given an Entity, it makes the substituions in the template. */
-    public abstract String subst();
+    /** Given an Entity, it makes the substitutions in the template.
+      * @return the template with the variables substituted.
+      * @throws EmitError if something goes wrong.
+      */
+    public abstract String subst() throws EmitError;
 
     /** Applies all the given substitutions to the given template.
       * @param TEMPLATE the string with the placeholders.
@@ -68,7 +72,7 @@ public abstract class Templater {
         RValue toret = null;
 
         try {
-            final Var VAR = this.ENT.getVbles().getById( new Id( id ) );
+            final Var VAR = this.ENT.getVbles().get( new Id( id ) );
 
             if ( VAR != null ) {
                 toret = VAR.getRValue();

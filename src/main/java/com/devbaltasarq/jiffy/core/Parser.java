@@ -31,16 +31,28 @@ public class Parser {
         this.AST = new AST();
         this.state = Status.STORY;
         this.numLine = 0;
+        this.endInput = false;
         this.DESC = new StringBuilder( 160 );
     }
+    
+    /** @return the compiled AST. */
+    public AST getAST()
+    {
+        return this.AST;
+    }
 
+    /** Parsers a whole file.
+      * @param fileName the file path to compile.
+      * @return the AST obtained.
+      * @throws CompileError if something goes wrong.
+      */
     public AST parseFile(String fileName) throws CompileError
     {
         try (InputStream in = Files.newInputStream( Paths.get( fileName ) );
              BufferedReader reader =
                      new BufferedReader( new InputStreamReader( in ) ) )
         {
-            String line = "";
+            String line;
 
             while ( ( line = reader.readLine() ) != null ) {
                 ++numLine;
@@ -52,30 +64,38 @@ public class Parser {
                     this.parse( line );
                 }
             }
+            
+            if ( !this.endInput ) {
+                throw new CompileError( "missing end of input: \"...\"" );
+            }
         } catch (IOException x) {
             throw new CompileError( x.getMessage() );
         }
 
-        this.storeCurrentDesc();
         return this.AST;
     }
 
+    /** Parses an individual text line.
+      * @param line the line of text to compile.
+      * @throws CompileError if something goes wrong.
+      */
     public void parse(String line) throws CompileError
     {
         this.lex = new Lexer( line );
 
         if ( this.lex.match( Lexer.OPENED_SQ_BRACKET ) ) {
+            // Parse the beginning of a Loc
             this.lex.advance( -1 );
             this.storeCurrentDesc();
             this.popState();
             final Entity ENT = this.parseEntity();
 
-            if ( ENT instanceof Loc ) {
+            if ( ENT instanceof final Loc LOC ) {
                 if ( !this.AST.getStory().getId().equals( Id.empty() ) )
                 {
                     this.AST.add( ENT );
                 } else {
-                    this.AST.getStory().setId( ENT.getId() );
+                    this.AST.changeStoryFor( LOC );
                 }
 
                 this.state = Status.LOC;
@@ -87,25 +107,26 @@ public class Parser {
                     this.state = Status.OBJ;
                 } else {
                     throw new Error( "unexpected: not a loc: "
-                                      + PARENT.toString()
+                                      + PARENT
                                       + " to add obj: "
-                                      + ENT.toString() );
+                                      + ENT );
                 }
             }
         }
         else
         if ( this.lex.match( Lexer.VAR ) ) {
+            // Parse a variable
             this.lex.advance( -1 );
             final Var VAR = this.parseVariable();
 
-            if ( !this.AST.getLocs().isEmpty()
+            if ( !this.AST.getStory().getLocs().isEmpty()
               && ( this.state == Status.LOC
                 || this.state == Status.OBJ ) )
             {
                 this.AST.current( this.state ).getVbles().add( VAR );
             }
             else
-            if ( this.AST.getLocs().isEmpty()
+            if ( this.AST.getStory().getLocs().isEmpty()
               && this.state == Status.LOC )
             {
                 // We are parsing the story info as a loc
@@ -120,6 +141,12 @@ public class Parser {
             } else {
                 throw buildError( "unexpected error parsing variable" );
             }
+        }
+        else
+        if ( this.lex.match( "..." ) ) {
+            // This is the end
+            this.endInput = true;
+            this.storeCurrentDesc();
         } else {
             // Plain text -- it's a desc
             final char FIRST_CHAR = this.lex.getCurrentChar();
@@ -160,10 +187,6 @@ public class Parser {
             final Entity ENT = this.AST.current( this.state );
 
             try {
-                if ( this.state == Status.STORY ) {
-                    this.AST.getStory().setDesc( STR_DESC );
-                }
-
                 ENT.setDesc( STR_DESC );
             } catch(CompileError exc) {
                 throw buildError( exc.getMessage() );
@@ -181,11 +204,13 @@ public class Parser {
         Entity toret = null;
 
         if ( this.lex.match( Lexer.OPEN_LOC ) ) {
+            // Parsing a loc
             this.lex.advance( - Lexer.OPEN_LOC.length() );
             toret = this.parseLoc();
         }
         else
         if ( this.lex.match( Lexer.OPENED_SQ_BRACKET ) ) {
+            // Parsing an object
             this.lex.advance( -1 );
             toret = this.parseObj( (Loc) this.AST.current( this.state ) );
         } else {
@@ -202,6 +227,7 @@ public class Parser {
 
         if ( this.lex.match( Lexer.OPENED_SQ_BRACKET ) ) {
             String strId = this.lex.getToken();
+            String strLongName = this.parseLongName();
 
             if ( strId.isEmpty() ) {
                 throw buildError( "expected obj's id" );
@@ -217,6 +243,10 @@ public class Parser {
             }
 
             toret = new Obj( this.AST, strId, OWNER );
+            
+            if ( !strLongName.isEmpty() ) {
+                toret.changeTitle( strLongName );
+            }
         } else {
             throw buildError( "expected " + Lexer.OPENED_SQ_BRACKET );
         }
@@ -230,6 +260,7 @@ public class Parser {
 
         if ( this.lex.match( Lexer.OPEN_LOC ) ) {
             String strId = this.lex.getToken();
+            String strLongName = this.parseLongName();
 
             if ( strId.isEmpty() ) {
                 throw buildError( "expected loc's id" );
@@ -245,10 +276,28 @@ public class Parser {
             }
 
             toret = new Loc( this.AST, strId );
+            
+            if ( !strLongName.isEmpty() ) {
+                toret.changeTitle( strLongName );
+            }
         } else {
             throw buildError( "expected " + Lexer.OPEN_LOC );
         }
 
+        return toret;
+    }
+    
+    private String parseLongName()
+    {
+        String toret = "";
+        
+        this.lex.skipSpaces();
+        
+        if ( lex.getCurrentChar() == '|' ) {
+            toret = this.lex.getLiteral( '|', ']' ).trim();
+            this.lex.advance( -1 );
+        }
+        
         return toret;
     }
 
@@ -320,6 +369,7 @@ public class Parser {
 
     private final String DESC_FIRST_ALLOWED_CHARS = ".-_\"'¡¿^{";
     private final StringBuilder DESC;
+    private boolean endInput;
     private int numLine;
     private Lexer lex;
     private Status state;

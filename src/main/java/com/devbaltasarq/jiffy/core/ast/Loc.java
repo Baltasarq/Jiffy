@@ -6,12 +6,12 @@ package com.devbaltasarq.jiffy.core.ast;
 
 import com.devbaltasarq.jiffy.core.AST;
 import com.devbaltasarq.jiffy.core.Id;
+import com.devbaltasarq.jiffy.core.IndexedCatalog;
 import com.devbaltasarq.jiffy.core.errors.CompileError;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.HashMap;
 
 
 /** Represents locs (rooms). Rooms can have objects inside. */
@@ -20,20 +20,50 @@ public class Loc extends Entity {
     {
         super( AST, name );
         this.current = null;
-        this.OBJS = new HashMap<>();
-
-        // Put the first char in upper case
-        this.title = name.trim().toLowerCase();
-        this.title = this.title.substring( 0, 1 ).toUpperCase()
-                     + this.title.substring( 1 );
+        this.exits = new HashMap<>();
+        this.OBJS = new IndexedCatalog();
     }
-
-    /** @return the title of this room. */
-    public String getTitle()
+    
+    /** @return an Id given a direction, if an exit exists,
+      *           or null otherwise.
+      * @param dir the given direction.
+      */
+    public Id getExitAt(Direction dir)
     {
-        return this.title;
+        if ( dir == null ) {
+            throw new Error( "getExitAt(): direction can't be null" );
+        }
+        
+        return this.exits.get( dir );
+    }
+    
+    /** @return a list of all directions that have an exit. */
+    public List<Direction> getAllExitDirections()
+    {
+        return this.exits.keySet().stream().toList();
+    }
+    
+    /** Sets a new exit to a given loc (through an id) at a given direction.
+      * @param dir the given direction.
+      * @param id a given id.
+      */
+    public void setExitAt(Direction dir, Id id)
+    {
+        if ( dir == null ) {
+            throw new Error( "setExitAt(): direction can't be null" );
+        }
+        
+        if ( id == null ) {
+            throw new Error( "setExitAt(): loc can't be null" );
+        }
+        
+        this.exits.put( dir, id );
     }
 
+    /** Stores a new Obj.
+      * @param obj an Obj for this Loc.
+      * @throws CompileError if the id already exists.
+      */
     public void add(Obj obj) throws CompileError
     {
         if ( obj == null ) {
@@ -48,23 +78,28 @@ public class Loc extends Entity {
                     + "' already exists in: " + this.getId() );
         }
 
-        this.OBJS.put( obj.getId(), obj );
+        this.OBJS.add( obj );
         this.current = obj;
     }
 
+    /** @return the object for the given id.
+      * @param id the given id.
+      */
     public Obj getObj(Id id)
     {
         return this.OBJS.get( id );
     }
 
+    /** @return the current object being compiled. */
     public Obj current()
     {
         return this.current;
     }
 
+    /** @return all the objects for this room. */
     public List<Obj> getObjs()
     {
-        return new ArrayList<>( this.OBJS.values() );
+        return this.OBJS.all();
     }
 
     @Override
@@ -74,6 +109,6 @@ public class Loc extends Entity {
     }
 
     private Obj current;
-    private String title;
-    private final Map<Id, Obj> OBJS;
+    private final Map<Direction, Id> exits;
+    private final IndexedCatalog<Obj> OBJS;
 }

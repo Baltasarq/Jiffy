@@ -5,9 +5,10 @@ package com.devbaltasarq.jiffy.core.parser;
 
 
 import com.devbaltasarq.jiffy.core.Id;
+import com.devbaltasarq.jiffy.core.Identifiable;
 
 
-public class Var {
+public class Var implements Identifiable {
     public Var(Id id, RValue rvalue)
     {
         this.ID = id;
@@ -19,6 +20,7 @@ public class Var {
         return this.RVALUE;
     }
 
+    @Override
     public Id getId()
     {
         return this.ID;

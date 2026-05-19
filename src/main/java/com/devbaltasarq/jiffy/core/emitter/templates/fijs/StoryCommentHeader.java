@@ -16,6 +16,11 @@ import java.util.Map;
 
 /** Templates for locs in fi-js. */
 public class StoryCommentHeader extends Templater {
+    private static final String VAR_STORY_ID = "$(STORY_ID)";
+    private static final String VAR_STORY_DESC = "$(STORY_DESC)";
+    private static final String VAR_STORY_DATE = "$(STORY_DATE)";
+    private static final String VAR_STORY_IFID = "$(STORY_IFID)";
+    
     public StoryCommentHeader(final Entity ENT)
     {
         super( ENT );
@@ -33,11 +38,12 @@ public class StoryCommentHeader extends Templater {
                         Locale.ROOT );
         final String FORMATTED_DATE = DT_FMT.format( ZonedDateTime.now() );
 
-
-        SUBSTS.put( "$STORY_ID", ENT_STORY.getId().get() );
-        SUBSTS.put( "$STORY_DESC", ENT_STORY.getDesc() );
-        SUBSTS.put( "$STORY_DATE", FORMATTED_DATE );
-        SUBSTS.put( "$STORY_IFID", ENT_STORY.getIfId().toString() );
+        SUBSTS.putAll(
+                Map.of(
+                    VAR_STORY_ID, ENT_STORY.getId().get(),
+                    VAR_STORY_DESC, ENT_STORY.getDesc(),
+                    VAR_STORY_DATE, FORMATTED_DATE,
+                    VAR_STORY_IFID, ENT_STORY.getIfId().toString() ));
 
         this.mergeSubstMaps( DEFAULT_SUBSTS, SUBSTS );
         return this.applySubsts( STORY_TEMPLATE, SUBSTS );
@@ -45,32 +51,21 @@ public class StoryCommentHeader extends Templater {
 
     private void initDefaultSubsts()
     {
-        final String[] KEYS = {
-                "$STORY_DATE",
-                "$STORY_IFID",
-        };
-        final String[] VALUES = {
-                /* $STORY_DATE       <- */ "[ERR] DATE?",
-                /* $STORY_IFID       <- */ "[ERR] IFID?",
-        };
-
-        DEFAULT_SUBSTS.clear();
-        for(int i = 0; i < KEYS.length; ++i) {
-            DEFAULT_SUBSTS.put( KEYS[ i ], VALUES[ i ] );
-        }
-
-        return;
+        DEFAULT_SUBSTS.putAll(
+                        Map.of(
+                                VAR_STORY_DATE, "[ERR] DATE?",
+                                VAR_STORY_IFID, "[ERR] IFID?" ));
     }
 
     private static final Map<String, String> DEFAULT_SUBSTS = new HashMap<>();
 
     private static final String STORY_TEMPLATE = """
-    // $STORY_ID
+    // $(STORY_ID)
     /*
-        $STORY_DESC
+        $(STORY_DESC)
         
-        @ $STORY_DATE
-        IfId $STORY_IFID
+        @ $(STORY_DATE)
+        IfId $(STORY_IFID)
     */
     """;
 }

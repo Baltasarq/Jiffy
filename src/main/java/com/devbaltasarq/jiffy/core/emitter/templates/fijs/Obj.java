@@ -4,7 +4,7 @@
 package com.devbaltasarq.jiffy.core.emitter.templates.fijs;
 
 
-import com.devbaltasarq.jiffy.core.Util;
+import com.devbaltasarq.jiffy.core.Id;
 import com.devbaltasarq.jiffy.core.ast.Entity;
 import com.devbaltasarq.jiffy.core.emitter.templates.Templater;
 
@@ -14,6 +14,13 @@ import java.util.Map;
 
 /** Templates for objs in fi-js. */
 public class Obj extends Templater {
+    private static final String VAR_OBJ_NAME = "$(OBJ_VAR_NAME)";
+    private static final String VAR_OBJ_ID = "$(OBJ_ID)";
+    private static final String VAR_OBJ_OWNER = "$(OBJ_LOC_OWNER)";
+    private static final String VAR_OBJ_DESC = "$(OBJ_DESC)";
+    private static final String VAR_OBJ_PORTABLE = "$(OBJ_PORTABLE)";
+    private static final String VAR_OBJ_SYN_LIST = "$(OBJ_SYN_LIST)";
+    
     public Obj(final Entity ENT)
     {
         super( ENT );
@@ -25,14 +32,17 @@ public class Obj extends Templater {
     {
         final Map<String, String> SUBSTS = new HashMap<>();
         final var ENTITY_OBJ = (com.devbaltasarq.jiffy.core.ast.Obj) this.getEntity();
-        final String LOC_OWNER = Util.varNameFromId(
+        final String LOC_OWNER = Id.varNameFromId(
                                     "LOC",
                                      ENTITY_OBJ.getOwner().getId().get() );
+        final String LOC_ID = Id.varNameFromId( "OBJ", ENTITY_OBJ.getId().get() );
 
-        SUBSTS.put( "$OBJ_VAR_NAME", Util.varNameFromId( "OBJ", ENTITY_OBJ.getId().get() ) );
-        SUBSTS.put( "$OBJ_ID", ENTITY_OBJ.getId().get() );
-        SUBSTS.put( "$OBJ_DESC", ENTITY_OBJ.getDesc() );
-        SUBSTS.put( "$LOC_OWNER", LOC_OWNER );
+        SUBSTS.putAll(
+                Map.of(
+                        VAR_OBJ_NAME, LOC_ID,
+                        VAR_OBJ_ID, ENTITY_OBJ.getId().get(),
+                        VAR_OBJ_DESC, ENTITY_OBJ.getDesc(),
+                        VAR_OBJ_OWNER, LOC_OWNER ));
 
         this.mergeSubstMaps( DEFAULT_SUBSTS, SUBSTS );
         return this.applySubsts( OBJ_TEMPLATE, SUBSTS );
@@ -40,32 +50,29 @@ public class Obj extends Templater {
 
     private void initDefaultSubsts()
     {
-        final String[] KEYS = {
-                "$OBJ_SYN_LIST",
-                "$OBJ_PORTABLE_OR_NOT",
-        };
-        final String[] VALUES = {
-                /* OBJ_SYN_LIST             <- */ "",
-                /* $OBJ_PORTABLE_OR_NOT     <- */ "Ent.Scenery",
-        };
-
         DEFAULT_SUBSTS.clear();
-        for(int i = 0; i < KEYS.length; ++i) {
-            DEFAULT_SUBSTS.put( KEYS[ i ], VALUES[ i ] );
-        }
-
-        return;
+        DEFAULT_SUBSTS.putAll(
+                        Map.of(
+                                VAR_OBJ_SYN_LIST, "",
+                                VAR_OBJ_PORTABLE, "Ent.Scenery" ));
     }
 
     private static final Map<String, String> DEFAULT_SUBSTS = new HashMap<>();;
     private static final String OBJ_TEMPLATE = """
                 
-    const $OBJ_VAR_NAME = ctrl.creaObj(
-        "$OBJ_ID",
-        [ $OBJ_SYN_LIST ],
-        "$OBJ_DESC",
-        $LOC_OWNER,
-        $OBJ_PORTABLE_OR_NOT
+    const %s = ctrl.creaObj(
+        "%s",
+        [ %s ],
+        "%s",
+        %s,
+        %s
     );
-    """;
+    """.formatted(
+        VAR_OBJ_NAME,
+        VAR_OBJ_ID,
+        VAR_OBJ_SYN_LIST,
+        VAR_OBJ_DESC,
+        VAR_OBJ_OWNER,
+        VAR_OBJ_PORTABLE
+        );
 }

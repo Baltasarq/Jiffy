@@ -15,6 +15,7 @@ public class Story extends Loc {
     public Story(final AST AST, String name) throws CompileError
     {
         super( AST, name );
+        
         this.LOCS = new HashMap<>();
         this.current = this;
         this.ifId = UUID.randomUUID();
@@ -24,11 +25,6 @@ public class Story extends Loc {
     public UUID getIfId()
     {
         return this.ifId;
-    }
-
-    public void setId(Id id)
-    {
-        this.id = id;
     }
 
     public void add(Loc loc) throws CompileError
@@ -49,7 +45,7 @@ public class Story extends Loc {
         this.current = loc;
     }
 
-    public Loc getLocs(Id id)
+    public Loc getLoc(Id id)
     {
         return this.LOCS.get( id );
     }

@@ -3,21 +3,22 @@
     ¡Cómete una anchoa! Tendrás que comerte una anchoa, pero... ¡no vale \
      hacerlo de cualquier manera!
 
-    @ 2023-10-12 13:56
-    IfId c7e965ec-402a-4938-8ea0-2c3d87095762
+    @ 2025-11-23 21:15
+    IfId b5911505-f853-4925-9370-fa134b76d96e
 */
 
 
 // -------------------------------------------------- dormitorio ---
 const LOC_DORMITORIO = ctrl.locs.crea(
     "Dormitorio",
-    [ "dormitorio", "dormitorio" ],
+    [ "" ],
     "Solo hay una ${cama, ex cama} y una desvencijada mesilla. Una puerta \
-     permite volver al ${salón, $DIR}." );
-
-LOC_DORMITORIO.ini = function() {
-    this.pic = "res/dormitorio.jpg";
-};
+     permite volver al ${salón, o}.",
+    function() {
+        this.pic = "res/dormitorio.jpg";
+        this.setExit( "west", LOC_SALON );
+    }
+);
 
 const OBJ_CAMA = ctrl.creaObj(
     "cama",
@@ -32,26 +33,29 @@ const OBJ_CAMA = ctrl.creaObj(
 // -------------------------------------------------- calle ---
 const LOC_CALLE = ctrl.locs.crea(
     "Calle",
-    [ "calle", "calle" ],
-    "" );
-
-LOC_CALLE.ini = function() {
-    this.pic = "res/calle.jpg";
-};
+    [ "" ],
+    "Aquí no hay nada que hacer. La puerta de la casa permite volver al \
+     ${interior, n}.",
+    function() {
+        this.pic = "res/calle.jpg";
+        this.setExit( "north", LOC_SALON );
+    }
+);
 
 
 // -------------------------------------------------- cocina ---
 const LOC_COCINA = ctrl.locs.crea(
     "Cocina",
-    [ "cocina", "cocina" ],
+    [ "" ],
     "La cocina es tremendamente austera, con solo una puerta entre el \
-     ${salón, $DIR} y ella. Un ${frigorífico, ex frigorifico} se arrincona \
+     ${salón, e} y ella. Un ${frigorífico, ex frigorifico} se arrincona \
      contra la esquina, mientras el ${fregadero, ex fregadero} se sitúa al \
-     final de una ${mesado, ex mesado} entre ellos." );
-
-LOC_COCINA.ini = function() {
-    this.pic = "res/cocina.jpg";
-};
+     final de una ${mesado, ex mesado} entre ellos.",
+    function() {
+        this.pic = "res/cocina.jpg";
+        this.setExit( "east", LOC_SALON );
+    }
+);
 
 const OBJ_MESADO = ctrl.creaObj(
     "mesado",
@@ -80,18 +84,21 @@ const OBJ_FRIGORIFICO = ctrl.creaObj(
 
 // -------------------------------------------------- salon ---
 const LOC_SALON = ctrl.locs.crea(
-    "Salón",
-    [ "salon", "salón" ],
+    "Salon",
+    [ "" ],
     "El salón es... antiguo. Parece como conservado en el tiempo por algún \
-     misterioso mecanismo. El ${tresillo, ex tresillo} se sitúa frente a \
-     un ${televisor, ex televisor} y una vieja ${radio, ex radio}, con una \
-     ${mesa, ex mesa} en el medio, mientras tres puertas en los extremos \
-     permiten dirigirse a la ${cocina, $DIR}, al ${dormitorio, $DIR} y a \
-     la ${calle, $DIR}." );
-
-LOC_SALON.ini = function() {
-    this.pic = "res/salon.jpg";
-};
+     misterioso e invisible mecanismo. El ${tresillo, ex tresillo} se \
+     sitúa frente a un ${televisor, ex televisor} y una vieja ${radio, ex \
+     radio}, con una ${mesa, ex mesa} en el medio, mientras tres puertas \
+     en los extremos permiten dirigirse a la ${cocina, o}, al \
+     ${dormitorio, e} y a la ${calle, s}.",
+    function() {
+        this.pic = "res/salon.jpg";
+        this.setExit( "west", LOC_COCINA );
+        this.setExit( "east", LOC_DORMITORIO );
+        this.setExit( "south", LOC_CALLE );
+    }
+);
 
 const OBJ_MESA = ctrl.creaObj(
     "mesa",
@@ -132,7 +139,7 @@ const PLAYER = ctrl.personas.creaPersona(
     "Jugador",
     ["jugador", "jugadora" ],
     "El bravo PC.",
-    salon
+    LOC_SALON
 );
 
 
@@ -143,7 +150,7 @@ ctrl.ini = function() {
      hacerlo de cualquier manera!" );
     this.setPic( "res/salon.jpg" );
     this.setAuthor( "baltasarq@gmail.com" );
-    this.setVersion( "v1.0 20231012" );
+    this.setVersion( "v1.0 20251123" );
     this.personas.changePlayer( PLAYER );
-    this.locs.setStart( salon );
+    this.locs.setStart( LOC_SALON );
 };
