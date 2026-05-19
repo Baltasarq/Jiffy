@@ -12,6 +12,7 @@ import java.io.File;
 public class SourceFile {
     public SourceFile(String fn)
     {
+        assert fn != null && !fn.isBlank(): "source file cannot be null";
         this( new File( fn ) );
     }
     
@@ -50,6 +51,12 @@ public class SourceFile {
         }
 
         return fileName;
+    }
+    
+    @Override
+    public String toString()
+    {
+        return this.source.toString();
     }
     
     private File target;
