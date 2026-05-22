@@ -5,27 +5,23 @@ package com.devbaltasarq.jiffy.view;
 
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.Set;
 import java.util.HashSet;
 import java.util.List;
 
 import com.devbaltasarq.jiffy.core.AST;
-import com.devbaltasarq.jiffy.core.Emitter;
 import com.devbaltasarq.jiffy.core.Parser;
 import com.devbaltasarq.jiffy.core.SourceFile;
 import com.devbaltasarq.jiffy.core.ast.JsonWriter;
+import com.devbaltasarq.jiffy.core.ast.TrizbortWriter;
 import com.devbaltasarq.jiffy.core.emitter.CompleteFiJsEmitter;
 import com.devbaltasarq.jiffy.core.errors.CompileError;
-import com.devbaltasarq.jiffy.core.emitter.FiJsEmitter;
-import com.devbaltasarq.jiffy.core.emitter.templates.fijs.Css;
-import com.devbaltasarq.jiffy.core.emitter.templates.fijs.Html;
 import com.devbaltasarq.jiffy.core.errors.EmitError;
 import java.io.File;
 
 
 public class ConsoleApp {
-    public enum Option { ERROR, HELP, JSON, COMPILE;
+    public enum Option { ERROR, HELP, JSON, TRIZBORT, COMPILE;
         public static Option parse(String strOpt)
         {
             Option toret;
@@ -97,17 +93,19 @@ public class ConsoleApp {
     public void compile() throws CompileError, EmitError, IOException
     {
         final Parser PARSE = new Parser();
-        final var TARGET_FILE = this.source.buildTarget();
+        final var TARGET_FILE = this.source.buildTarget().getAbsoluteFile();
         
         if ( this.source != null ) {
             final AST AST = PARSE.parseFile( this.source.get().getAbsolutePath() );
 
-            // Generate json?
+            // Compile, or generate trizbort, or json?
+            if ( this.opts.contains( Option.TRIZBORT ) ) {
+                final File TARGET_TRIZBORT = new File( TARGET_FILE + ".json" );
+                new TrizbortWriter( AST ).write( TARGET_TRIZBORT );
+            }
+            else
             if ( this.opts.contains( Option.JSON ) ) {
-                final File TARGET_JSON = new File(
-                                                TARGET_FILE.getAbsoluteFile()
-                                                + ".json" );
-                // Generate JSON
+                final File TARGET_JSON = new File( TARGET_FILE + ".json" );
                 new JsonWriter( AST ).write( TARGET_JSON );
             } else {
                 new CompleteFiJsEmitter( AST, TARGET_FILE.getAbsolutePath() ).emit();

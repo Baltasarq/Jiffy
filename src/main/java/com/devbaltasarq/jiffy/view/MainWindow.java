@@ -18,6 +18,7 @@ import com.devbaltasarq.jiffy.core.AppInfo;
 import com.devbaltasarq.jiffy.core.Parser;
 import com.devbaltasarq.jiffy.core.SourceFile;
 import com.devbaltasarq.jiffy.core.ast.JsonWriter;
+import com.devbaltasarq.jiffy.core.ast.TrizbortWriter;
 import com.devbaltasarq.jiffy.core.emitter.CompleteFiJsEmitter;
 import com.devbaltasarq.jiffy.core.errors.CompileError;
 import com.devbaltasarq.jiffy.core.errors.EmitError;
@@ -41,6 +42,8 @@ public final class MainWindow {
         this.view.setInsertObjAction( () -> this.doInsertObj() );
         this.view.setHelpAction( () -> this.doHelp() );
         this.view.setAboutAction( () -> this.doAbout() );
+        this.view.setExportToJsonAction( () -> this.doExportJson() );
+        this.view.setExportToTrizbortAction( () -> this.doExportTrizbort() );
         
         this.startFromScratch();
         
@@ -161,15 +164,6 @@ public final class MainWindow {
             
             final AST AST = PARSE.parseFile( SOURCE.get().getAbsolutePath() );
             
-            // Generate json?
-            if ( false ) {
-                final File TARGET_JSON = new File(
-                                                TARGET_FILE.getAbsoluteFile()
-                                                + ".json" );
-                // Generate JSON
-                new JsonWriter( AST ).write( TARGET_JSON );
-            }
-
             this.show( "Emitting: " + SOURCE.buildTarget() );
             new CompleteFiJsEmitter( AST, TARGET_FILE.getAbsolutePath() ).emit();
         } catch(CompileError | EmitError | IOException exc) {
@@ -234,6 +228,78 @@ public final class MainWindow {
                         AppInfo.COMPLETE_NAME,
                         AppInfo.NAME,
                         JOptionPane.PLAIN_MESSAGE );
+    }
+    
+    /** Export the current story to JSON. */
+    private void doExportJson()
+    {
+        if ( !this.getEditor().hasDocument() ) {
+            JOptionPane.showMessageDialog(
+                            this.getView(),
+                            "No input file",
+                            AppInfo.NAME,
+                            JOptionPane.ERROR_MESSAGE );
+        }
+        
+        var path = this.getEditor().getPath().toFile();
+        final SourceFile SOURCE = new SourceFile( path );
+        final File TARGET_FILE = SOURCE.buildTarget();
+        
+        this.doSave();
+        
+        try {
+            final Parser PARSE = new Parser();
+            
+            this.show( "Compiling: " + path );
+            final AST AST = PARSE.parseFile( SOURCE.get().getAbsolutePath() );
+            
+            this.show( "Saving JSON: " + SOURCE.buildTarget() + ".json" );
+            final File TARGET_JSON = new File( TARGET_FILE.getAbsoluteFile() + ".json" );
+            new JsonWriter( AST ).write( TARGET_JSON );
+        } catch(Exception exc) {
+            this.show( "[ERR] " + SOURCE.buildTarget() + ".json: " + exc.getMessage() );
+            JOptionPane.showMessageDialog(
+                            this.getView(),
+                            exc.getMessage(),
+                            AppInfo.NAME,
+                            JOptionPane.ERROR_MESSAGE );
+        }
+    }
+    
+    /** Export the current story to Trizbort. */
+    private void doExportTrizbort()
+    {
+        if ( !this.getEditor().hasDocument() ) {
+            JOptionPane.showMessageDialog(
+                            this.getView(),
+                            "No input file",
+                            AppInfo.NAME,
+                            JOptionPane.ERROR_MESSAGE );
+        }
+        
+        var path = this.getEditor().getPath().toFile();
+        final SourceFile SOURCE = new SourceFile( path );
+        final File TARGET_FILE = SOURCE.buildTarget();
+        
+        this.doSave();
+        
+        try {
+            final Parser PARSE = new Parser();
+            
+            this.show( "Compiling: " + path );
+            final AST AST = PARSE.parseFile( SOURCE.get().getAbsolutePath() );
+            
+            this.show( "Saving Trizbort: " + SOURCE.buildTarget() + ".json" );
+            final File TARGET_JSON = new File( TARGET_FILE.getAbsoluteFile() + ".json" );
+            new TrizbortWriter( AST ).write( TARGET_JSON );
+        } catch(Exception exc) {
+            this.show( "[ERR] " + SOURCE.buildTarget() + ".json: " + exc.getMessage() );
+            JOptionPane.showMessageDialog(
+                            this.getView(),
+                            exc.getMessage(),
+                            AppInfo.NAME,
+                            JOptionPane.ERROR_MESSAGE );
+        }
     }
     
     /** Start a new IF piece. */

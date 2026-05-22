@@ -9,12 +9,12 @@ import javax.swing.JOptionPane;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.io.File;
 import java.nio.file.Path;
 import java.io.IOException;
 import javax.swing.SwingUtilities;
 
 import com.devbaltasarq.jiffy.core.AppInfo;
+import com.devbaltasarq.jiffy.core.SourceFile;
 import com.devbaltasarq.jiffy.core.errors.CompileError;
 
 
@@ -76,9 +76,11 @@ public class Main {
         return;
     }
     
-    public static void chkFile(File f, final List<String> ARGS)
+    public static void chkFile(SourceFile f, final List<String> ARGS)
     {
-        if ( f == null ) {
+        if ( f == null
+          || !f.get().exists() )
+        {
             System.err.println( "[ERR] File not found: '"
                                 + String.join( ", ", ARGS ) + "'" );
             System.exit( -2 );
@@ -92,7 +94,7 @@ public class Main {
         var opts = APP.getOptions();
         
         if ( opts.contains( ConsoleApp.Option.COMPILE ) ) {
-            chkFile( APP.getSourceFile().get(), PRG_ARGS );
+            chkFile( APP.getSourceFile(), PRG_ARGS );
             consoleApp( APP );
         } else {
             String path = "";

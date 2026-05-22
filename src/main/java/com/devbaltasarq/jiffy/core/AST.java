@@ -10,9 +10,6 @@ import com.devbaltasarq.jiffy.core.ast.Obj;
 import com.devbaltasarq.jiffy.core.ast.Story;
 import com.devbaltasarq.jiffy.core.errors.CompileError;
 
-import java.util.List;
-import java.util.ArrayList;
-
 
 public final class AST {
     public final String IF_VBLES = " author start pic version ";

@@ -100,8 +100,13 @@ public class MainWindowView extends JFrame {
                 KeyStroke.getKeyStroke(
                                 KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK ) );
         
+        this.opExportToJson = new JMenuItem( "Export to json" );
+        this.opExportToTrizbort = new JMenuItem( "Export to Trizbort" );
+        
         FILE.add( this.opLoad );
         FILE.add( this.opSave );
+        FILE.add( this.opExportToJson );
+        FILE.add( this.opExportToTrizbort );
         FILE.add( this.opQuit );
         
         // Edit
@@ -138,10 +143,14 @@ public class MainWindowView extends JFrame {
         // Actions
         this.opLoad.addActionListener( (evt) -> this.loadAction.run() );
         this.opSave.addActionListener( (evt) -> this.saveAction.run() );
+        this.opExportToJson.addActionListener( (evt) -> this.exportJsonAction.run() );
+        this.opExportToTrizbort.addActionListener( (evt) -> this.exportTrizbortAction.run() );
         this.opQuit.addActionListener( (evt) -> this.quitAction.run() );
         this.opCompile.addActionListener( (evt) -> this.compileAction.run() );
         this.opHelp.addActionListener( (evt) -> this.helpAction.run() );
         this.opAbout.addActionListener( (evt) -> this.aboutAction.run() );
+        this.opInsertLoc.addActionListener( (evt) -> this.insertLocAction.run() );
+        this.opInsertObj.addActionListener( (evt) -> this.insertObjAction.run() );
 
         // Build
         this.menuBar = new JMenuBar();        
@@ -258,6 +267,22 @@ public class MainWindowView extends JFrame {
         this.helpAction = helpAction;
     }
     
+    /** Sets something to do when 'export to JSON' is selected.
+      * @param exportJsonAction typically a lambda with something to do.
+      */
+    public void setExportToJsonAction(Runnable exportJsonAction)
+    {
+        this.exportJsonAction = exportJsonAction;
+    }
+    
+    /** Sets something to do when 'export to Trizbort' is selected.
+      * @param exportTrizbortAction typically a lambda with something to do.
+      */
+    public void setExportToTrizbortAction(Runnable exportTrizbortAction)
+    {
+        this.exportTrizbortAction = exportTrizbortAction;
+    }
+    
     /** This is used for the window closing event. */
     private void onQuit()
     {
@@ -271,6 +296,8 @@ public class MainWindowView extends JFrame {
     private JMenuBar menuBar;
     private JMenuItem opLoad;
     private JMenuItem opSave;
+    private JMenuItem opExportToJson;
+    private JMenuItem opExportToTrizbort;
     private JMenuItem opQuit;
     private JMenuItem opCompile;
     private JMenuItem opInsertLoc;
@@ -280,6 +307,8 @@ public class MainWindowView extends JFrame {
     private Runnable quitAction;
     private Runnable loadAction;
     private Runnable saveAction;
+    private Runnable exportJsonAction;
+    private Runnable exportTrizbortAction;
     private Runnable compileAction;
     private Runnable insertLocAction;
     private Runnable insertObjAction;
