@@ -42,6 +42,14 @@ public class Editor {
         return this.path;
     }
     
+    /** Assign a path to the source in the editor.
+      * @param f a path to an existing/non-existing file.
+      */
+    public void assignPath(Path f)
+    {
+        this.path = f;
+    }
+    
     /** Sets the editor to the "no document" state. */
     public void setNoDocument()
     {
@@ -101,6 +109,7 @@ public class Editor {
     {
         this.setNoDocument();
         this.hasDocument = true;
+        this.getView().goToLine( 0 );
     }
     
     private Path path;

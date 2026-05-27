@@ -42,9 +42,10 @@ public class MainWindowView extends JFrame {
         this.setDefaultCloseOperation( JFrame.DO_NOTHING_ON_CLOSE );
         this.addWindowListener( this.windowListener );
         this.build();
-        this.quitAction = () -> {};
+        this.newAction = () -> {};
         this.saveAction = () -> {};
         this.loadAction = () -> {};
+        this.quitAction = () -> {};
         this.compileAction = () -> {};
         this.runAction = () -> {};
         this.insertLocAction = () -> {};
@@ -88,10 +89,10 @@ public class MainWindowView extends JFrame {
         final var HELP  = new JMenu( "Help" );
         
         // File
-        this.opQuit = new JMenuItem( "Quit" );
-        this.opQuit.setAccelerator(
+        this.opNew = new JMenuItem( "New" );
+        this.opNew.setAccelerator(
                 KeyStroke.getKeyStroke(
-                                KeyEvent.VK_Q, KeyEvent.CTRL_DOWN_MASK ) );
+                                KeyEvent.VK_N, KeyEvent.CTRL_DOWN_MASK ) );
         this.opLoad = new JMenuItem( "Open" );
         this.opLoad.setAccelerator(
                 KeyStroke.getKeyStroke(
@@ -103,7 +104,13 @@ public class MainWindowView extends JFrame {
         
         this.opExportToJson = new JMenuItem( "Export to json" );
         this.opExportToTrizbort = new JMenuItem( "Export to Trizbort" );
+        this.opQuit = new JMenuItem( "Quit" );
+        this.opQuit.setAccelerator(
+                KeyStroke.getKeyStroke(
+                                KeyEvent.VK_Q, KeyEvent.CTRL_DOWN_MASK ) );
+
         
+        FILE.add( this.opNew );
         FILE.add( this.opLoad );
         FILE.add( this.opSave );
         FILE.add( this.opExportToJson );
@@ -146,6 +153,7 @@ public class MainWindowView extends JFrame {
         HELP.add( this.opAbout );
         
         // Actions
+        this.opNew.addActionListener( (evt) -> this.newAction.run() );
         this.opLoad.addActionListener( (evt) -> this.loadAction.run() );
         this.opSave.addActionListener( (evt) -> this.saveAction.run() );
         this.opExportToJson.addActionListener( (evt) -> this.exportJsonAction.run() );
@@ -209,12 +217,12 @@ public class MainWindowView extends JFrame {
         return this.tree;
     }
     
-    /** Sets something to do when the window quits.
-      * @param quitAction typically a lambda with something to do.
+    /** Sets something to do when for beginning with a new source..
+      * @param newAction typically a lambda with something to do.
       */
-    public void setQuitAction(Runnable quitAction)
+    public void setNewAction(Runnable newAction)
     {
-        this.quitAction = quitAction;
+        this.newAction = newAction;
     }
     
     /** Sets something to do when the window quits.
@@ -231,6 +239,14 @@ public class MainWindowView extends JFrame {
     public void setSaveAction(Runnable saveAction)
     {
         this.saveAction = saveAction;
+    }
+    
+    /** Sets something to do when the window quits.
+      * @param quitAction typically a lambda with something to do.
+      */
+    public void setQuitAction(Runnable quitAction)
+    {
+        this.quitAction = quitAction;
     }
     
     /** Sets something to do when the source is compiled.
@@ -308,6 +324,7 @@ public class MainWindowView extends JFrame {
     private LocTreeView tree;
     private JTextArea txtOutput;
     private JMenuBar menuBar;
+    private JMenuItem opNew;
     private JMenuItem opLoad;
     private JMenuItem opSave;
     private JMenuItem opExportToJson;
@@ -319,11 +336,12 @@ public class MainWindowView extends JFrame {
     private JMenuItem opInsertObj;
     private JMenuItem opHelp;
     private JMenuItem opAbout;
-    private Runnable quitAction;
+    private Runnable newAction;
     private Runnable loadAction;
     private Runnable saveAction;
     private Runnable exportJsonAction;
     private Runnable exportTrizbortAction;
+    private Runnable quitAction;
     private Runnable compileAction;
     private Runnable runAction;
     private Runnable insertLocAction;

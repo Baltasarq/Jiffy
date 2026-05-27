@@ -34,6 +34,7 @@ public final class MainWindow {
     {
         this.view = new MainWindowView();
         this.editor = new Editor( this.view.getEditorView() );
+        this.view.setNewAction( () -> this.doNew() );
         this.view.setLoadAction( () -> this.doLoad() );
         this.view.setSaveAction( () -> this.doSave() );
         this.view.setQuitAction( () -> this.doQuit() );
@@ -84,21 +85,30 @@ public final class MainWindow {
         return this.editor;
     }
     
+    private void doNew()
+    {
+        // First save the current source
+        this.doSave();
+        
+        // Restart
+        this.clearOutput();
+        this.show(  "Starting from scratch." );
+        this.startFromScratch();        
+    }
+    
     /** Loads a document into the editor. */
     private void doLoad()
     {
+        // First save the current source
+        this.doSave();
+        
+        // Now ask for a new source to load
         final var FILE_DLG = new JFileChooser();
         
-        FILE_DLG.addChoosableFileFilter(
-                    new FileNameExtensionFilter(
-                            ".txt", new String[] { "jiffy" } ) );
-        FILE_DLG.addChoosableFileFilter(
-                    new FileNameExtensionFilter(
-                            ".txt", new String[] { "txt" } ) );
+        this.configure( FILE_DLG );
         int dlgResult = FILE_DLG.showOpenDialog( this.getView() );
         
         if ( dlgResult == JFileChooser.APPROVE_OPTION ) {
-            this.doSave();
             try {
                 this.getEditor().loadFromPath( FILE_DLG.getSelectedFile().toPath() );
             } catch(IOException exc)
@@ -114,12 +124,46 @@ public final class MainWindow {
         return;
     }
     
+    private void configure(final JFileChooser FILE_CHOOSER)
+    {
+        Path currentDir = this.getEditor().getPath();
+        
+        if ( currentDir == null ) {
+            currentDir = Path.of( System.getProperty( "user.home", "." ) );
+        }
+        
+        FILE_CHOOSER.setCurrentDirectory( currentDir.toFile() );
+        FILE_CHOOSER.setFileFilter(
+                        new FileNameExtensionFilter(
+                                        "Jiffy files (*.jiffy)",
+                                        "jiffy" ) );
+        FILE_CHOOSER.setFileFilter(
+                        new FileNameExtensionFilter(
+                                        "Text files (*.txt)",
+                                        "txt" ) );
+    }
+    
+    private Path askPath()
+    {
+        final var FILE_CHOOSER = new JFileChooser();
+        Path toret = null;
+        int result = FILE_CHOOSER.showSaveDialog( this.getView() );
+        
+        if ( result == JFileChooser.APPROVE_OPTION ) {
+            toret = FILE_CHOOSER.getSelectedFile().toPath();
+        }
+        
+        return toret;
+    }
+    
     /** Saves the document from the editor. */
     private void doSave()
     {
-        final Path PATH = this.editor.getPath();
+        if ( this.editor.getPath() == null ) {
+            this.editor.assignPath( this.askPath() );
+        }
         
-        if ( PATH != null ) {
+        if ( this.editor.getPath() != null ) {
             try {
                 this.editor.save();
             } catch(IOException exc) {

@@ -13,7 +13,7 @@
                 <exec.vmArgs></exec.vmArgs>
                 <exec.args>${exec.vmArgs} -classpath %classpath ${exec.mainClass} ${exec.appArgs}</exec.args>
                 <exec.appArgs>/home/baltasarq/Prys/if/prys/Kulpo/design/kulpo.jiffy</exec.appArgs>
-                <exec.mainClass>${packageClassName}</exec.mainClass>
+                <exec.mainClass>com.devbaltasarq.jiffy.view.Main</exec.mainClass>
                 <exec.executable>java</exec.executable>
                 <exec.workingdir>/home/baltasarq/Dropbox/Prys/if/prys/Kulpo/design</exec.workingdir>
             </properties>
