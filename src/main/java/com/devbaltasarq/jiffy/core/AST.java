@@ -12,7 +12,10 @@ import com.devbaltasarq.jiffy.core.errors.CompileError;
 
 
 public final class AST {
-    public final String IF_VBLES = " author start pic version ";
+    public final String IF_VBLES = " " + Id.author() + " "
+                                    + " " + Id.start() + " "
+                                    + " " + Id.pic() + " "
+                                    + " " + Id.version() + " ";
 
     public AST() throws CompileError
     {

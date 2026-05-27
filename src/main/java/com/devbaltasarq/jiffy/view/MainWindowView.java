@@ -46,6 +46,7 @@ public class MainWindowView extends JFrame {
         this.saveAction = () -> {};
         this.loadAction = () -> {};
         this.compileAction = () -> {};
+        this.runAction = () -> {};
         this.insertLocAction = () -> {};
         this.insertObjAction = () -> {};
         this.helpAction = () -> {};
@@ -128,8 +129,12 @@ public class MainWindowView extends JFrame {
         this.opCompile = new JMenuItem( "Compile" );
         this.opCompile.setAccelerator(
                 KeyStroke.getKeyStroke( KeyEvent.VK_F6, 0 ));
+        this.opRun = new JMenuItem( "Run" );
+        this.opRun.setAccelerator(
+                KeyStroke.getKeyStroke( KeyEvent.VK_F5, 0 ));
         
         TOOLS.add( this.opCompile );
+        TOOLS.add( this.opRun );
         
         // Help
         this.opHelp = new JMenuItem( "Help" );
@@ -147,6 +152,7 @@ public class MainWindowView extends JFrame {
         this.opExportToTrizbort.addActionListener( (evt) -> this.exportTrizbortAction.run() );
         this.opQuit.addActionListener( (evt) -> this.quitAction.run() );
         this.opCompile.addActionListener( (evt) -> this.compileAction.run() );
+        this.opRun.addActionListener( (evt) -> this.runAction.run() );
         this.opHelp.addActionListener( (evt) -> this.helpAction.run() );
         this.opAbout.addActionListener( (evt) -> this.aboutAction.run() );
         this.opInsertLoc.addActionListener( (evt) -> this.insertLocAction.run() );
@@ -235,6 +241,14 @@ public class MainWindowView extends JFrame {
         this.compileAction = compileAction;
     }
     
+    /** Sets something to do when the source is run.
+      * @param runAction typically a lambda with something to do.
+      */
+    public void setRunAction(Runnable runAction)
+    {
+        this.runAction = runAction;
+    }
+    
     /** Sets something to do when a loc is to be inserted.
       * @param insertLocAction typically a lambda with something to do.
       */
@@ -300,6 +314,7 @@ public class MainWindowView extends JFrame {
     private JMenuItem opExportToTrizbort;
     private JMenuItem opQuit;
     private JMenuItem opCompile;
+    private JMenuItem opRun;
     private JMenuItem opInsertLoc;
     private JMenuItem opInsertObj;
     private JMenuItem opHelp;
@@ -310,6 +325,7 @@ public class MainWindowView extends JFrame {
     private Runnable exportJsonAction;
     private Runnable exportTrizbortAction;
     private Runnable compileAction;
+    private Runnable runAction;
     private Runnable insertLocAction;
     private Runnable insertObjAction;
     private Runnable helpAction;

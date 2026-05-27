@@ -4,13 +4,16 @@
 package com.devbaltasarq.jiffy.core.ast;
 
 
-import com.devbaltasarq.jiffy.core.Catalog;
 import com.devbaltasarq.jiffy.core.AST;
 import com.devbaltasarq.jiffy.core.Id;
 import com.devbaltasarq.jiffy.core.HtmlFromMarkdown;
 import com.devbaltasarq.jiffy.core.errors.CompileError;
 import com.devbaltasarq.jiffy.core.parser.Vbles;
 import com.devbaltasarq.jiffy.core.Identifiable;
+import com.devbaltasarq.jiffy.core.parser.Var;
+import com.devbaltasarq.jiffy.core.parser.literals.StrLiteral;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import java.util.List;
 
@@ -25,7 +28,6 @@ public abstract class Entity implements Identifiable {
         name = name.trim();
         
         this.id = new Id( name );
-        this.syns = new Catalog<>();
         this.desc = "";
         this.VBLES = new Vbles();
         this.setTitleFromId();
@@ -70,12 +72,23 @@ public abstract class Entity implements Identifiable {
 
     public List<String> getSyns()
     {
-        return this.syns.all();
-    }
-
-    public void addSyn(String syn)
-    {
-        this.syns.add( syn.trim().toLowerCase() );
+        final List<String> TORET = new ArrayList<>();
+        
+        try {
+            final Id SYN_ID = new Id( "syn" );
+            final Var SYN_VAR = this.getVbles().get( SYN_ID );
+            
+            if ( SYN_VAR != null ) {
+                if ( SYN_VAR.getRValue() instanceof StrLiteral strSyn ) {
+                    TORET.addAll(
+                        Arrays.asList( strSyn.get().split( "," ) ) );
+                }
+            }
+        } catch(CompileError exc) {
+            // No Syn variable, nothing to do.
+        }
+        
+        return TORET;
     }
 
     public void setDesc(String desc) throws CompileError
@@ -136,5 +149,4 @@ public abstract class Entity implements Identifiable {
     private String desc;
     private final Vbles VBLES;
     private final AST AST;
-    private final Catalog<String> syns;
 }

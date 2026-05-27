@@ -4,16 +4,16 @@
 package com.devbaltasarq.jiffy.view;
 
 
-import com.devbaltasarq.jiffy.core.AST;
-import java.io.IOException;
-import java.nio.file.Path;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.awt.Desktop;
-import javax.swing.filechooser.FileNameExtensionFilter;
+import java.nio.file.Path;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
+import com.devbaltasarq.jiffy.core.AST;
 import com.devbaltasarq.jiffy.core.AppInfo;
 import com.devbaltasarq.jiffy.core.Parser;
 import com.devbaltasarq.jiffy.core.SourceFile;
@@ -38,6 +38,7 @@ public final class MainWindow {
         this.view.setSaveAction( () -> this.doSave() );
         this.view.setQuitAction( () -> this.doQuit() );
         this.view.setCompileAction( () -> this.doCompile() );
+        this.view.setRunAction( () -> this.doRun() );
         this.view.setInsertLocAction( () -> this.doInsertLoc() );
         this.view.setInsertObjAction( () -> this.doInsertObj() );
         this.view.setHelpAction( () -> this.doHelp() );
@@ -160,14 +161,61 @@ public final class MainWindow {
         try {
             final Parser PARSE = new Parser();
             
+            this.clearOutput();
             this.show( "Compiling: " + path );
             
             final AST AST = PARSE.parseFile( SOURCE.get().getAbsolutePath() );
             
-            this.show( "Emitting: " + SOURCE.buildTarget() );
+            this.show( "Emitting: " + TARGET_FILE );
             new CompleteFiJsEmitter( AST, TARGET_FILE.getAbsolutePath() ).emit();
         } catch(CompileError | EmitError | IOException exc) {
             this.show( "[CMP] " + exc.getMessage() );
+        }
+    }
+    
+    /** Execute the source code. */
+    private void doRun()
+    {
+        if ( !this.getEditor().hasDocument() ) {
+            JOptionPane.showMessageDialog(
+                            this.getView(),
+                            "No input file",
+                            AppInfo.NAME,
+                            JOptionPane.ERROR_MESSAGE );
+        }
+        
+        this.doSave();
+        this.doCompile();
+        
+        var path = this.getEditor().getPath().toFile();
+        final SourceFile SOURCE = new SourceFile( path );
+        final File TARGET_FILE = new File( SOURCE.buildTarget().
+                                                getAbsolutePath() + ".html" );
+
+        try {
+            this.clearOutput();
+            this.show( "Running: " + TARGET_FILE );
+                        
+            if ( !Desktop.isDesktopSupported() ) {
+                throw new UnsupportedOperationException( "no desktop!" );
+            }
+            
+            final Desktop DESK = Desktop.getDesktop();
+            
+            if ( !DESK.isSupported( Desktop.Action.BROWSE ) ) {
+                this.show( "[RUN] No browsing supported, "
+                            + "trying to open the directory" );
+                DESK.browseFileDirectory(path);
+                throw new UnsupportedOperationException( "no browser!" );
+            }
+            
+            DESK.browse( TARGET_FILE.toURI() );
+        } catch(UnsupportedOperationException exc) {
+            this.show( "[RUN] Unsupported action: " + exc.getMessage() );
+        } catch(IOException exc) {
+            this.show( "[RUN] I/O Error: " + exc.getMessage() );
+        } catch(Exception exc) {
+            this.show( "[RUN] Unexpected error: " + exc.getMessage() );
         }
     }
     
@@ -189,6 +237,11 @@ public final class MainWindow {
         final var EDITOR = this.view.getEditorView().getEditor();
                 
         EDITOR.insert( template , EDITOR.getSelectionStart() );
+    }
+    
+    private void clearOutput()
+    {
+        this.getView().getOutput().setText( "" );
     }
     
     /** Shows a message through the output panel.

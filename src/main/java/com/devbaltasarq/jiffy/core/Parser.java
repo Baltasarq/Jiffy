@@ -124,6 +124,7 @@ public class Parser {
                 || this.state == Status.OBJ ) )
             {
                 this.AST.current( this.state ).getVbles().add( VAR );
+System.out.println( "VAR: '" + VAR + "' added to " + this.AST.current(state));
             }
             else
             if ( this.AST.getStory().getLocs().isEmpty()
@@ -132,6 +133,7 @@ public class Parser {
                 // We are parsing the story info as a loc
                 if ( this.AST.IF_VBLES.contains( VAR.getId().get() ) ) {
                     this.AST.getStory().getVbles().add( VAR );
+System.out.println( "VAR: '" + VAR + "' added to main story.");
                 } else {
                     throw new CompileError( this.numLine,
                                             this.lex.getPos(),
@@ -310,6 +312,7 @@ public class Parser {
 
             if ( this.lex.match( Lexer.ASSIGN ) ) {
                 toret = new Var( new Id( id ), this.parseRValue() );
+System.out.println("Parsed '" + toret.getId() + "' to be " + toret.getRValue());
             }
         } else {
             throw buildError( "expected variable id" );

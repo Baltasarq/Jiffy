@@ -68,19 +68,6 @@ public class Id {
         return varNameFromId( "", txt.trim() ).toLowerCase();
     }
 
-    public static Id empty()
-    {
-        if ( emptyId == null ) {
-            try {
-                emptyId = new Id( EMPTY_STORY_ID );
-            } catch(CompileError exc) {
-                throw new Error( "creating empty_id" );
-            }
-        }
-
-        return emptyId;
-    }
-    
     /** Converts a name, such as "salón" in an id
       * that can safely be used for a variable or
       * even for a file name.
@@ -127,7 +114,86 @@ public class Id {
 
         return TORET.toString();
     }
+    
+    public static Id empty()
+    {
+        if ( emptyId == null ) {
+            try {
+                emptyId = new Id( EMPTY_STORY_ID );
+            } catch(CompileError exc) {
+                throw new Error( "creating empty_id" );
+            }
+        }
+
+        return emptyId;
+    }
+    
+    public static Id syn()
+    {
+        if ( synId == null ) {
+            try {
+                synId = new Id( "syn" );
+            } catch(CompileError exc) {
+                throw new Error( "creating id: 'syn'" );
+            }
+        }
+        return synId;
+    }
+    
+    public static Id author()
+    {
+        if ( authorId == null ) {
+            try {
+                authorId = new Id( "author" );
+            } catch(CompileError exc) {
+                throw new Error( "creating id: 'author'" );
+            }
+        }
+        return authorId;
+    }
+    
+    public static Id start()
+    {
+        if ( startId == null ) {
+            try {
+                startId = new Id( "start" );
+            } catch(CompileError exc) {
+                throw new Error( "creating id: 'start'" );
+            }
+        }
+        return startId;
+    }
+    
+    public static Id pic()
+    {
+        if ( picId == null ) {
+            try {
+                picId = new Id( "pic" );
+            } catch(CompileError exc) {
+                throw new Error( "creating id: 'pic'" );
+            }
+        }
+        return picId;
+    }
+    
+    public static Id version()
+    {
+        if ( versionId == null ) {
+            try {
+                versionId = new Id( "version" );
+            } catch(CompileError exc) {
+                throw new Error( "creating id: 'version'" );
+            }
+        }
+        return versionId;
+    }
+
+    private final String id;
 
     private static Id emptyId;
-    private final String id;
+    private static Id synId;
+    private static Id authorId;
+    private static Id startId;
+    private static Id picId;
+    private static Id versionId;
 }

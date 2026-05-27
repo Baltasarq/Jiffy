@@ -11,7 +11,9 @@ import com.devbaltasarq.jiffy.core.parser.RValue;
 
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.Map;
+import java.util.Locale;
+import java.util.HashMap;
 
 
 /** Templates for locs in fi-js. */
@@ -56,12 +58,12 @@ public class StoryInfo extends Templater {
     private void initDefaultSubsts()
     {
         // Initial values
-        String author = "author@brave.authors.com";
+        String author = "maluva@caad.es";
         String pic = "";
-        String desc = "";
+        String desc = "There's a trasure nearby. Can you help me to find it?";
         String intro = "";
         String version = "1.0";
-        String startLoc = "null";
+        String startLoc = "";
         
         // Real values, if present as vbles
         final RValue VAR_AUTHOR = this.getVar( "author" );
@@ -69,6 +71,7 @@ public class StoryInfo extends Templater {
         final RValue VAR_INTRO = this.getVar( "intro" );
         final RValue VAR_VERSION = this.getVar( "version" );
         final RValue VAR_START_LOC = this.getVar( "start" );
+        final var LOCS = this.AST.getStory().getLocs();
 
         if ( VAR_AUTHOR != null ) {
             author = VAR_AUTHOR.toString();
@@ -91,6 +94,15 @@ public class StoryInfo extends Templater {
 
             if ( LOC != null ) {
                 startLoc = Id.varNameFromId( "LOC", LOC.getId().toString() );
+            }
+        }
+        
+        if ( startLoc.isEmpty() ) {
+            if ( !LOCS.isEmpty() ) {
+                var loc = LOCS.get( 0 );
+                startLoc = Id.varNameFromId( "LOC", loc.getId().toString() );
+            } else {
+                startLoc = "null";
             }
         }
 

@@ -7,7 +7,6 @@ package com.devbaltasarq.jiffy.core.emitter;
 import com.devbaltasarq.jiffy.core.AST;
 import com.devbaltasarq.jiffy.core.Emitter;
 import com.devbaltasarq.jiffy.core.ast.Loc;
-import com.devbaltasarq.jiffy.core.ast.Obj;
 import com.devbaltasarq.jiffy.core.emitter.templates.fijs.StoryCommentHeader;
 import com.devbaltasarq.jiffy.core.errors.EmitError;
 
@@ -38,12 +37,6 @@ public class FiJsEmitter extends Emitter {
         for(Loc loc: this.getAst().getStory().getLocs() ) {
             out.write( new com.devbaltasarq.jiffy.core.emitter
                                             .templates.fijs.Loc( loc ).subst() );
-
-            // All objs inside the loc
-            for(Obj obj: loc.getObjs()) {
-                out.write( new com.devbaltasarq.jiffy.core.emitter
-                                            .templates.fijs.Obj( obj ).subst() );
-            }
         }
 
         // The story info

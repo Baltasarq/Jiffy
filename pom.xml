@@ -50,6 +50,11 @@
             <version>5.11.4</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>com.fifesoft</groupId>
+            <artifactId>rsyntaxtextarea</artifactId>
+            <version>3.3.4</version>
+        </dependency>
     </dependencies>
     <name>Jiffy</name>
     <description>An interactive fiction generator.</description>

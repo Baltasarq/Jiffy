@@ -7,6 +7,9 @@ package com.devbaltasarq.jiffy.core.emitter.templates.fijs;
 import com.devbaltasarq.jiffy.core.Id;
 import com.devbaltasarq.jiffy.core.ast.Entity;
 import com.devbaltasarq.jiffy.core.emitter.templates.Templater;
+import com.devbaltasarq.jiffy.core.parser.Var;
+import com.devbaltasarq.jiffy.core.parser.literals.StrLiteral;
+import java.util.Arrays;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -53,20 +56,37 @@ public class Obj extends Templater {
         DEFAULT_SUBSTS.clear();
         DEFAULT_SUBSTS.putAll(
                         Map.of(
-                                VAR_OBJ_SYN_LIST, "",
+                                VAR_OBJ_SYN_LIST, this.buildSynList(),
                                 VAR_OBJ_PORTABLE, "Ent.Scenery" ));
+    }
+    
+    private String buildSynList()
+    {
+        final var SYN_VAR = this.getVar( Id.syn().get() );
+        String toret = "";
+        
+        if ( SYN_VAR instanceof final StrLiteral STR) {
+            final String[] STR_SYNS = STR.get().split( "," );
+
+            toret = String.join( ",",
+                                Arrays.asList( STR_SYNS ).stream()
+                                        .map( (strSyn) -> '"' + strSyn.trim() + '"' )
+                                        .toList() );
+        }
+        
+        return toret;
     }
 
     private static final Map<String, String> DEFAULT_SUBSTS = new HashMap<>();;
     private static final String OBJ_TEMPLATE = """
                 
-    const %s = ctrl.creaObj(
-        "%s",
-        [ %s ],
-        "%s",
-        %s,
-        %s
-    );
+            const %s = ctrl.creaObj(
+                "%s",
+                [ %s ],
+                "%s",
+                %s,
+                %s
+            );
     """.formatted(
         VAR_OBJ_NAME,
         VAR_OBJ_ID,

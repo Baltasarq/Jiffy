@@ -67,8 +67,9 @@ public class Editor {
         if ( path != null ) {
             try {
                 this.getView().getEditor().setText(
-                    Files.readString( path ) );
+                                            Files.readString( path ) );
                 this.hasDocument = true;
+                this.getView().goToLine( 0 );
             } catch(IOException exc) {
                 LOG.severe( "load(): could not open: " + path );
                 this.setNoDocument();

@@ -6,6 +6,7 @@ package com.devbaltasarq.jiffy.core.emitter.templates.fijs;
 
 import com.devbaltasarq.jiffy.core.Id;
 import com.devbaltasarq.jiffy.core.AST;
+import com.devbaltasarq.jiffy.core.ast.Obj;
 import com.devbaltasarq.jiffy.core.ast.Entity;
 import com.devbaltasarq.jiffy.core.ast.Direction;
 import com.devbaltasarq.jiffy.core.emitter.templates.Templater;
@@ -20,6 +21,7 @@ import java.util.Map;
 /** Templates for locs in fi-js. */
 public class Loc extends Templater {
     private static final String EXITS_PLACEHOLDER = "%EXITS%";
+    private static final String OBJS_PLACEHOLDER = "%OBJS%";
     private static final String VAR_LOC_NAME = "$(LOC_VAR_NAME)";
     private static final String VAR_LOC_ID = "$(LOC_ID)";
     private static final String VAR_LOC_DESC = "$(LOC_DESC)";
@@ -70,6 +72,20 @@ public class Loc extends Templater {
         
         return TORET.toString();
     }
+    
+    private String substObjs(final List<Obj> OBJS)
+    {
+        final StringBuffer TORET = new StringBuffer();
+        
+        for(Obj entObj: OBJS) {
+            var obj =
+                    new com.devbaltasarq.jiffy.core.emitter.templates.fijs.Obj( entObj );
+            
+            TORET.append( obj.subst() );
+        }
+        
+        return TORET.toString();
+    }
 
     @Override
     public String subst() throws EmitError
@@ -77,6 +93,7 @@ public class Loc extends Templater {
         final Map<String, String> SUBSTS = new HashMap<>();
         final var ENTITY_LOC = (com.devbaltasarq.jiffy.core.ast.Loc) this.getEntity();
         final List<Direction> DIRECTIONS = ENTITY_LOC.getAllExitDirections();
+        final List<Obj> OBJS = ENTITY_LOC.getObjs();
         final String LOC_ID = Id.varNameFromId( "LOC", ENTITY_LOC.getId().get() );
         String template;
 
@@ -85,6 +102,12 @@ public class Loc extends Templater {
                         this.substExits( DIRECTIONS, SUBSTS ));
         } else {
             template = LOC_TEMPLATE.replace( EXITS_PLACEHOLDER, "" );
+        }
+
+        if ( !OBJS.isEmpty() ) {
+            template = template.replace( OBJS_PLACEHOLDER, this.substObjs( OBJS ) );
+        } else {
+            template = template.replace( OBJS_PLACEHOLDER, "" );
         }
 
         SUBSTS.putAll(
@@ -145,6 +168,7 @@ public class Loc extends Templater {
         "%s",
         function() {
             this.pic = "%s";
+    %s
     %s    }
     );
     """,
@@ -154,5 +178,6 @@ public class Loc extends Templater {
     VAR_LOC_SYN_LIST,
     VAR_LOC_DESC,
     VAR_LOC_PIC_FILE,
-    EXITS_PLACEHOLDER );
+    EXITS_PLACEHOLDER,
+    OBJS_PLACEHOLDER );
 }
