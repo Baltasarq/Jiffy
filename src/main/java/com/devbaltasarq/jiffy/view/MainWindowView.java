@@ -7,6 +7,8 @@ package com.devbaltasarq.jiffy.view;
 import java.awt.BorderLayout;
 import java.awt.Font;
 import java.awt.Dimension;
+import java.awt.KeyboardFocusManager;
+import java.awt.event.ActionEvent;
 import java.awt.event.WindowListener;
 import java.awt.event.WindowEvent;
 import javax.swing.JFrame;
@@ -16,10 +18,13 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
 import java.awt.event.KeyEvent;
+import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
+import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.SwingUtilities;
 
 
 /** The main window of Jiffy.
@@ -172,6 +177,19 @@ public class MainWindowView extends JFrame {
         this.menuBar.add( EDIT );
         this.menuBar.add( TOOLS );
         this.menuBar.add( HELP );
+        
+        // FIX: Insist for the F6 key binding
+        KeyboardFocusManager.getCurrentKeyboardFocusManager()
+                                .addKeyEventDispatcher( e -> {
+                if ( e.getID() == KeyEvent.KEY_PRESSED
+                  && e.getKeyCode() == KeyEvent.VK_F6 )
+                {
+                    compileAction.run();
+                    e.consume();
+                    return true; // Event consumed
+                }
+                return false; // Let normal processing continue
+        });
         return this.menuBar;
     }
     
