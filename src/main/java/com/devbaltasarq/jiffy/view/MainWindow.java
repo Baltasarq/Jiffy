@@ -92,7 +92,7 @@ public final class MainWindow {
         
         // Restart
         this.clearOutput();
-        this.show(  "Starting from scratch." );
+        this.show(  "[WAN] Starting from scratch." );
         this.startFromScratch();        
     }
     
@@ -110,9 +110,13 @@ public final class MainWindow {
         
         if ( dlgResult == JFileChooser.APPROVE_OPTION ) {
             try {
-                this.getEditor().loadFromPath( FILE_DLG.getSelectedFile().toPath() );
+                final File SELECTED_FILE = FILE_DLG.getSelectedFile();
+                
+                this.show( "[I/O] Loading: '" + SELECTED_FILE + "'" );
+                this.getEditor().loadFromPath( SELECTED_FILE.toPath() );
             } catch(IOException exc)
             {
+                this.show( "[I/O] Error: " + exc.getMessage() );
                 JOptionPane.showMessageDialog(
                         this.getView(),
                         "Error loading document: " + exc.getMessage(),
@@ -147,8 +151,10 @@ public final class MainWindow {
     {
         final var FILE_CHOOSER = new JFileChooser();
         Path toret = null;
-        int result = FILE_CHOOSER.showSaveDialog( this.getView() );
         
+        this.configure( FILE_CHOOSER );
+        
+        int result = FILE_CHOOSER.showSaveDialog( this.getView() );
         if ( result == JFileChooser.APPROVE_OPTION ) {
             toret = FILE_CHOOSER.getSelectedFile().toPath();
         }
@@ -159,14 +165,17 @@ public final class MainWindow {
     /** Saves the document from the editor. */
     private void doSave()
     {
-        if ( this.editor.getPath() == null ) {
+        if ( !this.editor.hasDocument() ) {
             this.editor.assignPath( this.askPath() );
         }
         
-        if ( this.editor.getPath() != null ) {
+        if ( this.editor.hasDocument() ) {
             try {
+                this.show( "[I/O] Saving: '" + this.editor.getPath() + "'" );
                 this.editor.save();
             } catch(IOException exc) {
+                this.show( "[I/O] Error: " + exc.getMessage() );
+                
                 JOptionPane.showMessageDialog(
                         this.getView(),
                         "Error saving document: " + exc.getMessage(),
@@ -191,29 +200,33 @@ public final class MainWindow {
         if ( !this.getEditor().hasDocument() ) {
             JOptionPane.showMessageDialog(
                             this.getView(),
-                            "No input file",
+                            "No file path assigned yet.",
                             AppInfo.NAME,
                             JOptionPane.ERROR_MESSAGE );
+        }
+        
+        this.doSave();
+        
+        if ( !this.getEditor().hasDocument() ) {
+            return;
         }
         
         var path = this.getEditor().getPath().toFile();
         final SourceFile SOURCE = new SourceFile( path );
         final File TARGET_FILE = SOURCE.buildTarget();
-        
-        this.doSave();
-        
+                
         try {
             final Parser PARSE = new Parser();
             
             this.clearOutput();
-            this.show( "Compiling: " + path );
+            this.show( "[CMP] " + path );
             
             final AST AST = PARSE.parseFile( SOURCE.get().getAbsolutePath() );
             
-            this.show( "Emitting: " + TARGET_FILE );
+            this.show( "[EMT] " + TARGET_FILE );
             new CompleteFiJsEmitter( AST, TARGET_FILE.getAbsolutePath() ).emit();
         } catch(CompileError | EmitError | IOException exc) {
-            this.show( "[CMP] " + exc.getMessage() );
+            this.show( "[ERR] " + exc.getMessage() );
         }
     }
     
@@ -223,13 +236,17 @@ public final class MainWindow {
         if ( !this.getEditor().hasDocument() ) {
             JOptionPane.showMessageDialog(
                             this.getView(),
-                            "No input file",
+                            "No file path assigned yet.",
                             AppInfo.NAME,
                             JOptionPane.ERROR_MESSAGE );
         }
         
         this.doSave();
         this.doCompile();
+        
+        if ( !this.getEditor().hasDocument() ) {
+            return;
+        }
         
         var path = this.getEditor().getPath().toFile();
         final SourceFile SOURCE = new SourceFile( path );
@@ -238,7 +255,7 @@ public final class MainWindow {
 
         try {
             this.clearOutput();
-            this.show( "Running: " + TARGET_FILE );
+            this.show( "[RUN] " + TARGET_FILE );
                         
             if ( !Desktop.isDesktopSupported() ) {
                 throw new UnsupportedOperationException( "no desktop!" );
@@ -255,11 +272,11 @@ public final class MainWindow {
             
             DESK.browse( TARGET_FILE.toURI() );
         } catch(UnsupportedOperationException exc) {
-            this.show( "[RUN] Unsupported action: " + exc.getMessage() );
+            this.show( "[I/O] Unsupported action: " + exc.getMessage() );
         } catch(IOException exc) {
-            this.show( "[RUN] I/O Error: " + exc.getMessage() );
+            this.show( "[I/O] I/O Error: " + exc.getMessage() );
         } catch(Exception exc) {
-            this.show( "[RUN] Unexpected error: " + exc.getMessage() );
+            this.show( "[ERR] Unexpected error: " + exc.getMessage() );
         }
     }
     
@@ -299,21 +316,25 @@ public final class MainWindow {
     /** When the user presses F1. */
     private void doHelp()
     {
+        final String URL_WIKI = AppInfo.WIKI_WEB_SITE;
+        
         try {
+            this.clearOutput();
+            
             if ( !Desktop.isDesktopSupported() ) {
                 throw new IOException( "desktop not supported" );
             }
-            
+                        
             final var DESKTOP = Desktop.getDesktop();
             
-            DESKTOP.browse( new URI( AppInfo.WIKI_WEB_SITE ) );
+            if ( !DESKTOP.isSupported( Desktop.Action.BROWSE ) ) {
+                throw new IOException( "Cannot open web browser for: " + URL_WIKI );
+            }
+            
+            DESKTOP.browse( new URI( URL_WIKI ) );
         } catch(URISyntaxException | IOException exc)
         {
-            JOptionPane.showMessageDialog(
-                            this.getView(),
-                            "Error opening help: " + exc.getMessage(),
-                            AppInfo.NAME,
-                            JOptionPane.ERROR_MESSAGE );
+            this.show( "[I/O] Error: " + exc.getMessage() );
         }
     }
     
@@ -333,24 +354,30 @@ public final class MainWindow {
         if ( !this.getEditor().hasDocument() ) {
             JOptionPane.showMessageDialog(
                             this.getView(),
-                            "No input file",
+                            "No file path assigned yet.",
                             AppInfo.NAME,
                             JOptionPane.ERROR_MESSAGE );
+        }
+        
+        this.doSave();
+        
+        if ( !this.getEditor().hasDocument() ) {
+            return;
         }
         
         var path = this.getEditor().getPath().toFile();
         final SourceFile SOURCE = new SourceFile( path );
         final File TARGET_FILE = SOURCE.buildTarget();
         
-        this.doSave();
+        this.clearOutput();
         
         try {
             final Parser PARSE = new Parser();
             
-            this.show( "Compiling: " + path );
+            this.show( "[CMP] " + path );
             final AST AST = PARSE.parseFile( SOURCE.get().getAbsolutePath() );
             
-            this.show( "Saving JSON: " + SOURCE.buildTarget() + ".json" );
+            this.show( "[I/O] Saving: " + SOURCE.buildTarget() + ".json" );
             final File TARGET_JSON = new File( TARGET_FILE.getAbsoluteFile() + ".json" );
             new JsonWriter( AST ).write( TARGET_JSON );
         } catch(Exception exc) {
@@ -369,9 +396,15 @@ public final class MainWindow {
         if ( !this.getEditor().hasDocument() ) {
             JOptionPane.showMessageDialog(
                             this.getView(),
-                            "No input file",
+                            "No file path assigned yet.",
                             AppInfo.NAME,
                             JOptionPane.ERROR_MESSAGE );
+        }
+        
+        this.doSave();
+        
+        if ( !this.getEditor().hasDocument() ) {
+            return;
         }
         
         var path = this.getEditor().getPath().toFile();
@@ -379,14 +412,15 @@ public final class MainWindow {
         final File TARGET_FILE = SOURCE.buildTarget();
         
         this.doSave();
+        this.clearOutput();
         
         try {
             final Parser PARSE = new Parser();
             
-            this.show( "Compiling: " + path );
+            this.show( "[CMP] " + path );
             final AST AST = PARSE.parseFile( SOURCE.get().getAbsolutePath() );
             
-            this.show( "Saving Trizbort: " + SOURCE.buildTarget() + ".json" );
+            this.show( "[I/O] Saving Trizbort: " + SOURCE.buildTarget() + ".json" );
             final File TARGET_JSON = new File( TARGET_FILE.getAbsoluteFile() + ".json" );
             new TrizbortWriter( AST ).write( TARGET_JSON );
         } catch(Exception exc) {
