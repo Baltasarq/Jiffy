@@ -50,7 +50,6 @@ public final class MainWindow {
         this.view.setAboutAction( () -> this.doAbout() );
         this.view.setExportToJsonAction( () -> this.doExportJson() );
         this.view.setExportToTrizbortAction( () -> this.doExportTrizbort() );
-        
         this.startFromScratch();
         
         if ( path != null ) {
@@ -75,6 +74,8 @@ public final class MainWindow {
                             JOptionPane.ERROR_MESSAGE );
             }
         }
+        
+        this.setWindowTitle();
     }
     
     /** @return the main window view. */
@@ -97,7 +98,8 @@ public final class MainWindow {
         // Restart
         this.clearOutput();
         this.show(  "[WAN] Starting from scratch." );
-        this.startFromScratch();        
+        this.startFromScratch();
+        this.setWindowTitle();
     }
     
     /** Loads a document into the editor. */
@@ -118,6 +120,7 @@ public final class MainWindow {
                 
                 this.show( "[I/O] Loading: '" + SELECTED_FILE + "'" );
                 this.getEditor().loadFromPath( SELECTED_FILE.toPath() );
+                this.setWindowTitle();
             } catch(IOException exc)
             {
                 this.show( "[I/O] Error: " + exc.getMessage() );
@@ -143,12 +146,13 @@ public final class MainWindow {
         FILE_CHOOSER.setCurrentDirectory( currentDir.toFile() );
         FILE_CHOOSER.setFileFilter(
                         new FileNameExtensionFilter(
-                                        "Jiffy files (*.jiffy)",
-                                        "jiffy" ) );
-        FILE_CHOOSER.setFileFilter(
-                        new FileNameExtensionFilter(
                                         "Text files (*.txt)",
                                         "txt" ) );
+
+        FILE_CHOOSER.setFileFilter(
+                        new FileNameExtensionFilter(
+                                        "Jiffy files (*.jiffy)",
+                                        "jiffy" ) );
     }
     
     private Path askPath()
@@ -177,6 +181,7 @@ public final class MainWindow {
             try {
                 this.show( "[I/O] Saving: '" + this.editor.getPath() + "'" );
                 this.editor.save();
+                this.setWindowTitle();
             } catch(IOException exc) {
                 this.show( "[I/O] Error: " + exc.getMessage() );
                 
@@ -194,6 +199,7 @@ public final class MainWindow {
     /** Finish the app. */
     private void doQuit()
     {
+        this.doSave();
         this.getView().setVisible( false );
         System.exit( 0 );
     }
@@ -488,6 +494,18 @@ public final class MainWindow {
     {
         this.editor.startFromScratch();
         this.insertTemplate(Template.TEMPLATE_INI );
+    }
+    
+    /** Correctly sets the title of the window. */
+    private void setWindowTitle()
+    {
+        String title = "";
+        
+        if ( this.getEditor().hasDocument() ) {
+            title += this.getEditor().getPath().getFileName() + " - ";
+        }
+        
+        this.getView().setTitle( title + AppInfo.NAME );
     }
 
     private final Editor editor;
