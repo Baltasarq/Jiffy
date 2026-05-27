@@ -15,6 +15,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import com.devbaltasarq.jiffy.core.AST;
 import com.devbaltasarq.jiffy.core.AppInfo;
+import com.devbaltasarq.jiffy.core.Id;
 import com.devbaltasarq.jiffy.core.Parser;
 import com.devbaltasarq.jiffy.core.SourceFile;
 import com.devbaltasarq.jiffy.core.ast.JsonWriter;
@@ -22,8 +23,9 @@ import com.devbaltasarq.jiffy.core.ast.TrizbortWriter;
 import com.devbaltasarq.jiffy.core.emitter.CompleteFiJsEmitter;
 import com.devbaltasarq.jiffy.core.errors.CompileError;
 import com.devbaltasarq.jiffy.core.errors.EmitError;
-import com.devbaltasarq.jiffy.core.parser.Templates;
+import com.devbaltasarq.jiffy.core.parser.Template;
 import java.io.File;
+import java.util.Map;
 
 
 /** The main window controller.
@@ -38,6 +40,8 @@ public final class MainWindow {
         this.view.setLoadAction( () -> this.doLoad() );
         this.view.setSaveAction( () -> this.doSave() );
         this.view.setQuitAction( () -> this.doQuit() );
+        this.view.setInsertLocAction( () -> this.doInsertLoc() );
+        this.view.setInsertObjAction( () -> this.doInsertObj() );
         this.view.setCompileAction( () -> this.doCompile() );
         this.view.setRunAction( () -> this.doRun() );
         this.view.setInsertLocAction( () -> this.doInsertLoc() );
@@ -194,6 +198,64 @@ public final class MainWindow {
         System.exit( 0 );
     }
     
+    /** Insert a new loc. */
+    private void doInsertLoc()
+    {
+        this.clearOutput();
+        this.show( "[INF] Inserting loc: asking for its name" );
+        
+        final String LOC_NAME = JOptionPane.showInputDialog(
+                            this.getView(),
+                            "Name for the new Loc?",
+                            AppInfo.NAME,
+                            JOptionPane.OK_CANCEL_OPTION );
+        
+        if ( LOC_NAME != null
+          && !LOC_NAME.isBlank() )
+        {
+            final String LOC_ID = Id.varNameFromId( "", LOC_NAME ).toLowerCase();
+            final Template LOC_TEMPLATE = new Template( Template.TEMPLATE_LOC );
+            final Map<String, String> SUBSTS = Map.of(
+                                                "LOC_ID", LOC_ID,
+                                                "LOC_NAME", LOC_NAME,
+                                                "LOC_PIC", LOC_ID,
+                                                "LOC_DESC", "Beautiful loc." );
+
+            this.show( "[INF] Inserting '" + LOC_ID + "' / '" + LOC_NAME );            
+            this.insertTemplate(LOC_TEMPLATE.applySubsts( SUBSTS ) );
+        } else {
+            this.show( "[ERR] No valid name given." );
+        }
+    }
+    
+    private void doInsertObj()
+    {
+        this.clearOutput();
+        this.show( "[INF] Inserting obj: asking for its name" );
+        
+        final String OBJ_NAME = JOptionPane.showInputDialog(
+                            this.getView(),
+                            "Name for the new Obj?",
+                            AppInfo.NAME,
+                            JOptionPane.OK_CANCEL_OPTION );
+        
+        if ( OBJ_NAME != null
+          && !OBJ_NAME.isBlank() )
+        {
+            final String OBJ_ID = Id.varNameFromId( "", OBJ_NAME ).toLowerCase();
+            final Template OBJ_TEMPLATE = new Template( Template.TEMPLATE_OBJ );
+            final Map<String, String> SUBSTS = Map.of(
+                                                "OBJ_ID", OBJ_ID,
+                                                "OBJ_NAME", OBJ_NAME,
+                                                "OBJ_DESC", "Beautiful thing." );
+
+            this.show( "[INF] Inserting '" + OBJ_ID + "' / '" + OBJ_NAME );            
+            this.insertTemplate(OBJ_TEMPLATE.applySubsts( SUBSTS ) );
+        } else {
+            this.show( "[ERR] No valid name given." );
+        }
+    }
+    
     /** Compile the source code. */
     private void doCompile()
     {
@@ -278,18 +340,6 @@ public final class MainWindow {
         } catch(Exception exc) {
             this.show( "[ERR] Unexpected error: " + exc.getMessage() );
         }
-    }
-    
-    /** Inserts a new loc. */
-    private void doInsertLoc()
-    {
-        
-    }
-    
-    /** Inserts a new obj. */
-    private void doInsertObj()
-    {
-        
     }
     
     /** Inserts any template. */
@@ -437,7 +487,7 @@ public final class MainWindow {
     private void startFromScratch()
     {
         this.editor.startFromScratch();
-        this.insertTemplate( Templates.TEMPLATE_INI );
+        this.insertTemplate(Template.TEMPLATE_INI );
     }
 
     private final Editor editor;
