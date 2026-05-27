@@ -10,7 +10,7 @@ This is a Java desktop application, created with Netbeans and Maven (you'll have
 
 ```bash
 $ mvn package
-$ java -jar target/jiffy-1.0.jar
+$ java -jar target/jiffy-1.0-jar-with-dependencies.jar
 ```
 
 ## Run
