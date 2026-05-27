@@ -55,13 +55,12 @@ public class Editor {
     {
         this.getView().getEditor().setText( "" );
         this.path = null;
-        this.hasDocument = false;
     }
     
     /** @return true if there is a document, false otherwise. */
     public boolean hasDocument()
     {
-        return this.hasDocument;
+        return ( this.getPath() != null );
     }
     
     /** Sets the path of the document being edited.
@@ -76,7 +75,6 @@ public class Editor {
             try {
                 this.getView().getEditor().setText(
                                             Files.readString( path ) );
-                this.hasDocument = true;
                 this.getView().goToLine( 0 );
             } catch(IOException exc) {
                 LOG.severe( "load(): could not open: " + path );
@@ -108,11 +106,9 @@ public class Editor {
     public void startFromScratch()
     {
         this.setNoDocument();
-        this.hasDocument = true;
         this.getView().goToLine( 0 );
     }
     
     private Path path;
-    private boolean hasDocument;
     private EditorView view;
 }
