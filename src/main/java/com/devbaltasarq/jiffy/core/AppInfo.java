@@ -6,7 +6,7 @@ package com.devbaltasarq.jiffy.core;
 
 public class AppInfo {
     public static final String NAME = "Jiffy";
-    public static final String VERSION = "v1.1 20260509 'fresh'";
+    public static final String VERSION = "v1.2 20260527 'flash'";
     public static final String COMPLETE_NAME = NAME + " " + VERSION;
     public static final String WEB_SITE = "http://github.com/baltasarq/Jiffy";
     public static final String WIKI_WEB_SITE = "http://github.com/baltasarq/Jiffy/wiki";
