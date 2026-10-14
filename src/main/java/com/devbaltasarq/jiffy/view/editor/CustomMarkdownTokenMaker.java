@@ -122,7 +122,7 @@ public class CustomMarkdownTokenMaker extends AbstractTokenMaker {
         return this.firstToken;
     }
 
-    /** Returns the words to highlight. */
+    /** @return the words to highlight. */
     @Override
     public TokenMap getWordsToHighlight() {
         final var TORET = new TokenMap();
