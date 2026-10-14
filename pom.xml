@@ -65,12 +65,12 @@
         <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
-            <version>20251224</version>
+            <version>20260814</version>
         </dependency>
         <dependency>
             <groupId>com.fifesoft</groupId>
             <artifactId>rsyntaxtextarea</artifactId>
-            <version>3.3.4</version>
+            <version>4.0.1</version>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
