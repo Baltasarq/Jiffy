@@ -12,15 +12,16 @@ import java.util.List;
   * @author baltasarq
   */
 public enum Direction {
-    NORTH( Set.of( "n", "norte", "north" ) ),
-    SOUTH( Set.of( "s", "sur", "south" ) ),
-    EAST( Set.of( "e", "este", "east" ) ),
-    WEST( Set.of( "w", "o", "oeste", "west" ) ),
-    UP( Set.of( "u", "up", "arriba", "subir", "sube" ) ),
-    DOWN( Set.of( "d", "down", "abajo", "bajar", "baja" ) );
+    NORTH( "n", Set.of( "n", "norte", "north" ) ),
+    SOUTH( "s", Set.of( "s", "sur", "south" ) ),
+    EAST( "e", Set.of( "e", "este", "east" ) ),
+    WEST( "o", Set.of( "w", "o", "oeste", "west" ) ),
+    UP( "arriba", Set.of( "u", "up", "arriba", "subir", "sube" ) ),
+    DOWN( "abajo", Set.of( "d", "down", "abajo", "bajar", "baja" ) );
     
-    Direction(Set<String> strDirs)
+    Direction(String name, Set<String> strDirs)
     {
+        this.name = name;
         this.dirSyns = strDirs;
     }
     
@@ -50,5 +51,12 @@ public enum Direction {
         return toret;
     }
     
+    @Override
+    public String toString()
+    {
+        return this.name;
+    }
+    
+    private final String name;
     private final Set<String> dirSyns;
 }

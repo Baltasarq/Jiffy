@@ -1,0 +1,20 @@
+
+Playa
+
+Playa de guijarros, un asco.
+
+@set mojado false
+@proc {
+    cmd: { v: "ir", n1: "norte" },
+    cond: !this.mojado,
+    then {
+        msg: "Te bañas.",
+        do: [
+            this.mojado = true,
+
+        ]
+    },
+    else {
+        msg: "Ya estás mojado, y no quieres coger frío."
+    }
+}

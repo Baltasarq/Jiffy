@@ -1,7 +1,8 @@
-/*
- * // YYY (c) 2xxx Baltasar MIT License <baltasarq@gmail.com>
- */
+// (c) Jiffy 2023 Baltasar MIT License <baltasarq@gmail.com>
+
+
 package com.devbaltasarq.jiffy.core.emitter;
+
 
 import com.devbaltasarq.jiffy.core.AST;
 import com.devbaltasarq.jiffy.core.Emitter;
@@ -11,10 +12,9 @@ import com.devbaltasarq.jiffy.core.errors.EmitError;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-/**
- *
- * @author baltasarq
- */
+/** Generator for all needed files for fi.js
+  * @author baltasarq
+  */
 public class CompleteFiJsEmitter {
     public CompleteFiJsEmitter(final AST AST, final String TARGET_FILE)
     {

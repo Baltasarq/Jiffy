@@ -47,12 +47,12 @@ public class Loc extends Templater {
         
         for(int i = 0; i < DIRECTIONS.size(); ++i) {
             final Direction DIR = DIRECTIONS.get( i );
-            final String DIR_VBLE = VAR_EXIT_DIR + ( i + 1 ) + ")";
-            final String LOC_VBLE = VAR_LOC_DEST + ( i + 1 ) + ")";
             final var ID_LOC_DEST = LOC.getExitAt( DIR );
             final var LOC_DEST = THE_AST.findLocById( ID_LOC_DEST );
             
             if ( LOC_DEST != null ) {
+                final String DIR_VBLE = VAR_EXIT_DIR + ( i + 1 ) + ")";
+                final String LOC_VBLE = VAR_LOC_DEST + ( i + 1 ) + ")";
                 final String LOC_VAR_NAME = Id.varNameFromId( "LOC", LOC_DEST.getId().get() );
 
                 TORET.append(
@@ -75,7 +75,7 @@ public class Loc extends Templater {
     
     private String substObjs(final List<Obj> OBJS)
     {
-        final StringBuffer TORET = new StringBuffer();
+        final var TORET = new StringBuffer();
         
         for(Obj entObj: OBJS) {
             var obj =
@@ -114,8 +114,7 @@ public class Loc extends Templater {
                 Map.of(
                     VAR_LOC_NAME, LOC_ID,
                     VAR_LOC_ID, ENTITY_LOC.getId().get(),
-                    VAR_LOC_DESC, ENTITY_LOC.getDesc() )
-        );
+                    VAR_LOC_DESC, ENTITY_LOC.getDesc() ) );
         
         this.mergeSubstMaps( DEFAULT_SUBSTS, SUBSTS );
         return this.applySubsts( template, SUBSTS );
